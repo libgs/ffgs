@@ -3,8 +3,8 @@
 One way to load and run feed-forward 3D Gaussian Splatting models: posed images in,
 Gaussians in **your** world frame out, whatever model is behind it.
 
-> Early development: the core interface is in place; models, the model zoo and
-> third-party loading are being added.
+> Early development: the core interface and third-party loading are in place;
+> models and the model zoo are being added.
 
 ```python
 from ffgs import Cameras, GSPipeline, Views
@@ -68,8 +68,58 @@ A saved model is a directory (or Hub repo) with `config.json` (model config +
 `model_type`), `model.safetensors` and `processor_config.json`;
 `GSPipeline.save_pretrained` writes all three.
 
-Adding a model: a model class with `PyTorchModelHubMixin`, a `Processor` subclass
-(`preprocess`, `postprocess`, `render_planes`), and `register_model(ModelSpec(...))`.
+## Adding a model
+
+A model is a model class with `PyTorchModelHubMixin`, a `Processor` subclass
+(`preprocess`, `postprocess`, `render_planes`) and a
+`ModelSpec(model_type, model_cls, processor_cls)`. `from_pretrained` resolves the
+`model_type` in `config.json` in this order:
+
+1. **In your code** — `ffgs.register_model(spec)` before loading (built-in models
+   are registered the same way, on first use).
+2. **An installed package** — expose the spec under the `ffgs.models` entry point
+   group, named by its `model_type`; ffgs imports the package only when that
+   `model_type` is loaded:
+
+   ```toml
+   # pyproject.toml of your package
+   [project.entry-points."ffgs.models"]
+   my-model = "my_package.ffgs_model:SPEC"   # a ModelSpec with model_type "my-model"
+   ```
+
+3. **Code in the model repo** — ship the `.py` files next to `config.json` and name
+   the classes (relative imports between the files work):
+
+   ```json
+   {"model_type": "my-model",
+    "auto_map": {"model": "modeling_my.MyModel", "processor": "processing_my.MyProcessor"}}
+   ```
+
+   That code runs only with `trust_remote_code=True` (off by default); read it
+   first and pin the revision:
+
+   ```python
+   pipe = GSPipeline.from_pretrained("someone/my-model", trust_remote_code=True,
+                                     revision="<commit sha>")
+   ```
+
+   `save_pretrained` on such a pipeline copies the code and keeps `auto_map`.
+   To publish a model whose code lives in your own (e.g. training) codebase, keep
+   the model and processor classes in one package that imports itself only
+   relatively, and export it with the weights:
+
+   ```python
+   GSPipeline(model, processor, model_type="my-model").save_pretrained(
+       "export/my-model", include_code=True)   # copies the package, writes auto_map
+   ```
+
+   Imports of the rest of your codebase are refused at export time, so the
+   directory loads with `trust_remote_code=True` where your codebase is not
+   installed.
+
+An installed model wins over repo code with the same `model_type`. Hub options
+(`revision`, `cache_dir`, `token`, `force_download`, `local_files_only`) apply to
+every file `from_pretrained` downloads.
 
 ## Development
 
