@@ -1,0 +1,65 @@
+[project]
+name = "ffgs"
+version = "0.1.0.dev0"
+description = "Standard inference for feed-forward 3D Gaussian Splatting models"
+readme = "README.md"
+license = "Apache-2.0 AND MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "libgs contributors" }]
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "huggingface_hub>=0.23",
+    "numpy",
+    "pillow",
+    "safetensors",
+    "torch>=2.2",
+    "torchvision>=0.17",
+]
+
+[project.optional-dependencies]
+# Rasterisation (`ffgs.render`, `GSPipeline.render`); needs a CUDA torch.
+render = ["gsplat"]
+
+[project.urls]
+Repository = "https://github.com/libgs/ffgs"
+
+[dependency-groups]
+dev = [
+    "black==25.9.0",
+    "plyfile",
+    "pre-commit==4.3.0",
+    "pytest",
+    "ruff==0.14.3",
+]
+
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.sdist]
+# An explicit list, so local files outside git never ship.
+only-include = ["src", "tests", "examples", "docs", "LICENSE", "README.md", "uv.lock"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ffgs"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["gpu: needs CUDA and gsplat (skipped without them; run only these with -m gpu)"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+fix = true
+
+[tool.ruff.lint]
+extend-select = ["I"]
+ignore = ["E203"]
