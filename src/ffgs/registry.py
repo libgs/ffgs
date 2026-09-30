@@ -17,8 +17,10 @@ from __future__ import annotations
 
 import importlib
 import warnings
+from collections.abc import Callable
 from dataclasses import dataclass
 from importlib.metadata import EntryPoint, entry_points
+from typing import Any
 
 from .processor import Processor
 
@@ -33,6 +35,9 @@ class ModelSpec:
     model_type: str
     model_cls: type
     processor_cls: type[Processor]
+    # Upstream checkpoint (as loaded from a zoo entry's weights file) -> state dict
+    # of `model_cls`. Not applied to directories written by `save_pretrained`.
+    convert_state_dict: Callable[[Any], dict[str, Any]] | None = None
 
 
 _REGISTRY: dict[str, ModelSpec] = {}

@@ -12,17 +12,32 @@ from typing import Any
 import torch
 from torch import nn
 
-from . import dynamic
+from . import dynamic, zoo
 from . import render as render_mod
 from .geometry import ModelFrame
-from .processor import Processor, read_json
+from .processor import PROCESSOR_CONFIG_NAME, Processor, read_json
 from .registry import ModelSpec, get_model_spec, spec_for_model
 from .types import Cameras, Gaussians, Views
 
 CONFIG_NAME = "config.json"
 # Options of `huggingface_hub` downloads that `from_pretrained` passes through.
 HUB_KWARGS = frozenset(
-    {"revision", "cache_dir", "token", "force_download", "local_files_only"}
+    {
+        "revision",
+        "subfolder",
+        "cache_dir",
+        "token",
+        "force_download",
+        "local_files_only",
+    }
+)
+# What `subfolder=` fetches from a Hub repo: a saved pipeline and its code.
+_PIPELINE_FILES = (
+    CONFIG_NAME,
+    "model.safetensors",
+    "pytorch_model.bin",
+    PROCESSOR_CONFIG_NAME,
+    "*.py",
 )
 
 
@@ -63,7 +78,10 @@ class GSPipeline:
         trust_remote_code: bool = False,
         **hub_kwargs: Any,
     ) -> GSPipeline:
-        """`pretrained`: a directory written by `save_pretrained`, or a Hub repo id.
+        """`pretrained`: a directory written by `save_pretrained`, a model zoo
+        name (`"<family>/<variant>"`, see `ffgs.zoo.list_models()`), or a Hub
+        repo id — tried in that order. A zoo family name is reserved: it is
+        never read as a Hub repo owner.
 
         `model_type` overrides the one in config.json (for directories exported
         before it was recorded). It resolves to a registered or built-in model,
@@ -72,9 +90,11 @@ class GSPipeline:
         config.json:auto_map (see `ffgs.registry`). Pin `revision=` when trusting
         Hub code.
 
-        `hub_kwargs` (`revision`, `cache_dir`, `token`, `force_download`,
-        `local_files_only`) apply to every file fetched from the Hub: config,
-        weights, processor config and code.
+        `hub_kwargs` (`revision`, `subfolder`, `cache_dir`, `token`,
+        `force_download`, `local_files_only`) apply to every file fetched from the
+        Hub: config, weights, processor config and code. `subfolder` selects a
+        variant saved in a subdirectory of a repo (or of a local directory). A zoo
+        entry pins its own revision and file, so it takes neither.
         """
         unknown = set(hub_kwargs) - HUB_KWARGS
         if unknown:
@@ -82,6 +102,14 @@ class GSPipeline:
                 f"unexpected arguments {sorted(unknown)}; Hub options are "
                 f"{sorted(HUB_KWARGS)}"
             )
+        name = zoo.resolve(pretrained)
+        if name is not None:
+            return cls._from_zoo(
+                name, model_type, device, processor_overrides, **hub_kwargs
+            )
+        subfolder = hub_kwargs.pop("subfolder", None)
+        if subfolder:
+            pretrained = _fetch_subfolder(pretrained, subfolder, **hub_kwargs)
         config = None
         if model_type is None:
             config = read_json(pretrained, CONFIG_NAME, **hub_kwargs)
@@ -99,6 +127,47 @@ class GSPipeline:
         if processor_overrides:
             processor = spec.processor_cls(processor.config, **processor_overrides)
         pipe = cls(model, processor, model_type)
+        return pipe.to(device) if device is not None else pipe
+
+    @classmethod
+    def _from_zoo(
+        cls,
+        name: str,
+        model_type: str | None,
+        device: torch.device | str | None,
+        processor_overrides: dict[str, Any] | None,
+        **hub_kwargs: Any,
+    ) -> GSPipeline:
+        entry = zoo.get_entry(name)
+        pinned = sorted({"revision", "subfolder"} & set(hub_kwargs))
+        if pinned:
+            raise TypeError(
+                f"{name} is a zoo entry pinned to {entry.weights.repo}/"
+                f"{entry.weights.file}@{entry.weights.revision}; {pinned} do not "
+                "apply to it"
+            )
+        if model_type is not None and model_type != entry.model_type:
+            raise ValueError(
+                f"zoo entry {name} is a {entry.model_type!r} model, not "
+                f"{model_type!r}"
+            )
+        spec = get_model_spec(entry.model_type)
+        model = spec.model_cls(**entry.model)
+        state_dict = zoo.load_state_dict(entry, spec, **hub_kwargs)
+        try:
+            model.load_state_dict(state_dict, strict=True)
+        except RuntimeError as err:
+            raise RuntimeError(
+                f"zoo entry {name}: weights do not fit {spec.model_cls.__name__} "
+                f"(check the entry's model config and the model_type's "
+                f"convert_state_dict): {err}"
+            ) from None
+        processor = spec.processor_cls.from_dict(
+            entry.processor, source=f"zoo entry {name}: processor"
+        )
+        if processor_overrides:
+            processor = spec.processor_cls(processor.config, **processor_overrides)
+        pipe = cls(model, processor, entry.model_type)
         return pipe.to(device) if device is not None else pipe
 
     def save_pretrained(
@@ -180,6 +249,24 @@ class GSPipeline:
             return render_mod.render(
                 output.gaussians, cameras.to(self.device), near=near, far=far, **kwargs
             )
+
+
+def _fetch_subfolder(pretrained: str | Path, subfolder: str, **hub_kwargs: Any) -> Path:
+    """A local directory holding `subfolder` of a directory or Hub repo."""
+    local = Path(pretrained)
+    if local.is_dir():
+        path = local / subfolder
+    else:
+        from huggingface_hub import snapshot_download
+
+        patterns = [f"{subfolder}/{name}" for name in _PIPELINE_FILES]
+        path = Path(
+            snapshot_download(str(pretrained), allow_patterns=patterns, **hub_kwargs)
+        )
+        path = path / subfolder
+    if not path.is_dir():
+        raise FileNotFoundError(f"{pretrained} has no subfolder {subfolder!r}")
+    return path
 
 
 def _resolve_spec(

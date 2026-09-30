@@ -49,7 +49,10 @@ packages = ["src/ffgs"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-markers = ["gpu: needs CUDA and gsplat (skipped without them; run only these with -m gpu)"]
+markers = [
+    "gpu: needs CUDA and gsplat (skipped without them; run only these with -m gpu)",
+    "network: downloads from the Hugging Face Hub (skipped unless --network)",
+]
 
 [tool.black]
 line-length = 88

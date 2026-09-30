@@ -3,13 +3,13 @@
 One way to load and run feed-forward 3D Gaussian Splatting models: posed images in,
 Gaussians in **your** world frame out, whatever model is behind it.
 
-> Early development: the core interface and third-party loading are in place;
-> models and the model zoo are being added.
+> Early development: the core interface, third-party loading and the model zoo
+> are in place; models are being added.
 
 ```python
 from ffgs import Cameras, GSPipeline, Views
 
-pipe = GSPipeline.from_pretrained("path/or/hf-repo-id", device="cuda")
+pipe = GSPipeline.from_pretrained("family/variant", device="cuda")  # or a path / Hub repo
 out = pipe(Views(images, intrinsics, c2w))          # -> GSOutput
 out.gaussians.save_ply("scene.ply")                  # standard 3DGS ply
 images = pipe.render(out, Cameras(c2w_new, k_new, (h, w)))["images"]
@@ -63,10 +63,59 @@ pipe = GSPipeline.from_pretrained(path, processor_overrides={"crop_mode": "pad"}
 | model | the model's own `nn.Module` with `PyTorchModelHubMixin` (`config.json` + safetensors) |
 | `pipeline` | `GSPipeline`: `from_pretrained` dispatches on `config.json:model_type` |
 | `render` | gsplat rasterisation of `Gaussians` at `Cameras` (gsplat imported on first use) |
+| `zoo` | named checkpoints: `zoo/<family>/<variant>.json` pointers to pinned upstream weights |
 
 A saved model is a directory (or Hub repo) with `config.json` (model config +
 `model_type`), `model.safetensors` and `processor_config.json`;
 `GSPipeline.save_pretrained` writes all three.
+
+## Model zoo
+
+The zoo names published checkpoints: one JSON file per variant in
+`src/ffgs/zoo/<family>/<variant>.json`, shipped with the package. The weights stay
+in their authors' Hub repos; an entry pins the file to a commit and a sha256.
+
+```python
+from ffgs import GSPipeline, zoo
+
+zoo.list_models()                        # ["<family>/<variant>", ...]
+pipe = GSPipeline.from_pretrained("<family>/<variant>", device="cuda")
+```
+
+```json
+{
+  "model_type": "my-model",
+  "description": "My model trained on X, 2 input views",
+  "weights": {"repo": "author/repo", "file": "ckpt/model.pt",
+              "revision": "<full 40-hex commit>", "sha256": "<64-hex>"},
+  "model": {"...": "model constructor arguments"},
+  "processor": {"...": "processor_config.json"},
+  "source": {"url": "https://github.com/author/code", "paper": "https://..."},
+  "license": "license of the weights"
+}
+```
+
+Loading an entry downloads the file at the pinned commit, fails if its sha256
+differs, converts the upstream checkpoint with the model's
+`ModelSpec.convert_state_dict` (e.g. stripping a key prefix) and loads it strictly:
+every key must match. `.pt` checkpoints are unpickled with `weights_only=True`.
+`save_pretrained` then writes an ordinary ffgs directory.
+
+`from_pretrained(name)` tries, in order: an existing local directory, a zoo entry,
+a Hub repo id. A zoo family name is reserved — `"<family>/<anything>"` never goes
+to the Hub, and an unknown variant is an error listing the known ones. (To load a
+Hub repo whose owner shares a family name, `huggingface_hub.snapshot_download` it
+and pass the directory.) A zoo entry pins its own revision, so `revision=` and
+`subfolder=` are rejected for it; `cache_dir`, `token`, `force_download` and
+`local_files_only` apply.
+
+Checkpoints saved with `save_pretrained` can also be published as Hub repos, one
+per model family with variants in subfolders:
+
+```python
+pipe = GSPipeline.from_pretrained("owner/family-repo", subfolder="variant",
+                                  revision="<commit sha>")
+```
 
 ## Adding a model
 
@@ -118,8 +167,14 @@ A model is a model class with `PyTorchModelHubMixin`, a `Processor` subclass
    installed.
 
 An installed model wins over repo code with the same `model_type`. Hub options
-(`revision`, `cache_dir`, `token`, `force_download`, `local_files_only`) apply to
-every file `from_pretrained` downloads.
+(`revision`, `subfolder`, `cache_dir`, `token`, `force_download`,
+`local_files_only`) apply to every file `from_pretrained` downloads.
+
+To add a zoo entry for a model, write its JSON (compute the sha256 of the pinned
+file), give the model's `ModelSpec` a `convert_state_dict` if the upstream keys
+differ from the model's, and run the tests: every shipped entry is checked to
+parse and build offline, and `uv run pytest --network` downloads each one and
+loads it strictly.
 
 ## Development
 
@@ -127,6 +182,7 @@ every file `from_pretrained` downloads.
 uv sync
 uv run pytest            # everything; tests marked `gpu` skip without CUDA + gsplat
 uv run pytest -m gpu     # only the GPU tests (needs CUDA and `--extra render`)
+uv run pytest --network  # also the tests that download zoo weights from the Hub
 uv run pre-commit install
 ```
 

@@ -20,20 +20,6 @@ PLUGIN_TYPE = "ffgs-test-plugin"
 REMOTE_TYPE = "ffgs-test-remote"
 
 
-@pytest.fixture
-def clean_registry():
-    """Forget model types registered by a test, and the plugin / built-in model
-    modules it imported (a built-in registers on import, so it must import again)."""
-    before = dict(registry._REGISTRY)
-    modules = set(sys.modules)
-    yield
-    registry._REGISTRY.clear()
-    registry._REGISTRY.update(before)
-    for name in set(sys.modules) - modules:
-        if name.startswith(("ffgs_test_plugin", "ffgs.models.")):
-            del sys.modules[name]
-
-
 def _install_plugin(root: Path, monkeypatch, entry_points: str, code: str) -> None:
     """A distribution on sys.path with `ffgs.models` entry points."""
     (root / "ffgs_test_plugin").mkdir(parents=True)
@@ -445,12 +431,12 @@ def _fake_hub(monkeypatch, repos: dict[str, Path]) -> list[dict]:
     """Serve repo ids from local directories; record every download's options."""
     calls = []
 
-    def hf_hub_download(repo_id, filename, **kwargs):
-        calls.append(kwargs)
-        return str(repos[repo_id] / filename)
+    def hf_hub_download(repo_id, filename, subfolder=None, **kwargs):
+        calls.append({"repo_id": repo_id, "filename": filename, **kwargs})
+        return str(repos[repo_id] / (subfolder or "") / filename)
 
     def snapshot_download(repo_id, **kwargs):
-        calls.append(kwargs)
+        calls.append({"repo_id": repo_id, **kwargs})
         return str(repos[repo_id])
 
     monkeypatch.setattr(huggingface_hub, "hf_hub_download", hf_hub_download)

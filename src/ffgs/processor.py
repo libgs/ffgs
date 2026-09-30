@@ -146,12 +146,15 @@ class Processor:
     @classmethod
     def from_pretrained(cls, pretrained: str | Path, **hub_kwargs: Any) -> Processor:
         data = read_json(pretrained, PROCESSOR_CONFIG_NAME, **hub_kwargs)
+        return cls.from_dict(data, source=PROCESSOR_CONFIG_NAME)
+
+    @classmethod
+    def from_dict(cls, data: dict[str, Any], source: str = "config") -> Processor:
         known = {f.name for f in fields(cls.config_cls)}
         unknown = set(data) - known
         if unknown:
             raise ValueError(
-                f"{PROCESSOR_CONFIG_NAME} has keys {sorted(unknown)} unknown to "
-                f"{cls.__name__}"
+                f"{source} has keys {sorted(unknown)} unknown to {cls.__name__}"
             )
         return cls(data)
 

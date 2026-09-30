@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -15,13 +16,38 @@ def _has_gpu() -> bool:
     return torch.cuda.is_available() and importlib.util.find_spec("gsplat") is not None
 
 
+def pytest_addoption(parser) -> None:
+    parser.addoption(
+        "--network", action="store_true", help="run tests marked `network`"
+    )
+
+
 def pytest_collection_modifyitems(config, items) -> None:
-    if _has_gpu():
-        return
-    skip = pytest.mark.skip(reason="needs CUDA and gsplat")
+    skips = {}
+    if not _has_gpu():
+        skips["gpu"] = pytest.mark.skip(reason="needs CUDA and gsplat")
+    if not config.getoption("--network"):
+        skips["network"] = pytest.mark.skip(reason="needs --network")
     for item in items:
-        if "gpu" in item.keywords:
-            item.add_marker(skip)
+        for marker, skip in skips.items():
+            if marker in item.keywords:
+                item.add_marker(skip)
+
+
+@pytest.fixture
+def clean_registry():
+    """Forget model types registered by a test, and the plugin / built-in model
+    modules it imported (a built-in registers on import, so it must import again)."""
+    from ffgs import registry
+
+    before = dict(registry._REGISTRY)
+    modules = set(sys.modules)
+    yield
+    registry._REGISTRY.clear()
+    registry._REGISTRY.update(before)
+    for name in set(sys.modules) - modules:
+        if name.startswith(("ffgs_test_plugin", "ffgs.models.")):
+            del sys.modules[name]
 
 
 class Reference:
