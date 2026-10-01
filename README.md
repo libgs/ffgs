@@ -5,13 +5,14 @@ Gaussians out — in the model's own frame, or in **your** world frame with one 
 whatever model is behind it.
 
 > Early development: the core interface, third-party loading and the model zoo
-> are in place, with TokenGS as the first model (reproduced exactly, see
-> [Results](#results)); more models are being added.
+> are in place; see
+> [the models](https://github.com/libgs/ffgs/blob/main/docs/models/index.md)
+> for those shipped so far.
 
 ```python
 from ffgs import Cameras, GSPipeline, Views
 
-pipe = GSPipeline.from_pretrained("tokengs/dl3dv-6v", device="cuda")  # or a path / Hub repo
+pipe = GSPipeline.from_pretrained("<family>/<variant>", device="cuda")  # or a path / Hub repo
 out = pipe(Views(images, intrinsics, c2w))          # -> GSOutput, in the model's frame
 images = pipe.render(out, Cameras(c2w_new, k_new, (h, w)))["images"]  # cameras in your frame
 out.to_world().gaussians.save_ply("scene.ply")      # standard 3DGS ply, in the frame of c2w
@@ -35,73 +36,38 @@ camera poses) from evenly spaced frames, writes a 3DGS ply in the scene's frame 
 renders the frames between the inputs:
 
 ```bash
-python examples/infer_nerfstudio_scene.py <scene> --model tokengs/dl3dv-6v \
+python examples/infer_nerfstudio_scene.py <scene> --model <family>/<variant> \
     --images-dir <scene>/images_4 --out out
+```
+
+Models that predict their own cameras also run on images alone. There is no world
+frame then: the Gaussians and the predicted input cameras are both in the model's
+frame, and renders take cameras in that frame (see [Conventions](#conventions)):
+
+```python
+pipe = GSPipeline.from_pretrained("<family>/<variant>", device="cuda")  # a pose-free model
+out = pipe(Views(images))                    # no intrinsics, no c2w: out.frame is None
+out.gaussians.save_ply("scene.ply")          # in the model's frame
+renders = pipe.render(out, out.cameras)["images"]  # the inputs, at the predicted cameras
+```
+
+[`examples/infer_pose_free.py`](https://github.com/libgs/ffgs/blob/main/examples/infer_pose_free.py)
+does this for a folder of images: it writes the ply, the predicted cameras
+(`cameras.json`: OpenCV c2w and normalised intrinsics per input image) and the
+inputs re-rendered at them:
+
+```bash
+python examples/infer_pose_free.py <image dir> --model <family>/<variant> \
+    --num-views 8 --out out
 ```
 
 ## Models
 
-| zoo name | model | input views | input size | weights |
-|---|---|---|---|---|
-| `tokengs/dl3dv-base` | TokenGS, 1024 Gaussian tokens (the base the variants below are finetuned from) | 4 | 256×256 | [jiaweir/tokengs](https://huggingface.co/jiaweir/tokengs) |
-| `tokengs/dl3dv-{2,4,6}v` | TokenGS, 4096 Gaussian tokens | 2 / 4 / 6 | 256×448 | [jiaweir/tokengs](https://huggingface.co/jiaweir/tokengs) |
-| `tokengs/dl3dv-latent-{2,4,6}v-{ssim,lpips}` | TokenGS 2026.6 latent-bottleneck models, trained with an SSIM or an LPIPS loss | 2 / 4 / 6 | 256×448 | [jiaweir/tokengs](https://huggingface.co/jiaweir/tokengs) |
-
-TokenGS ([paper](https://arxiv.org/abs/2604.15239),
-[code](https://github.com/nv-tlabs/TokenGS)) is trained on DL3DV. Its code is
-vendored under Apache-2.0 (`src/ffgs/models/tokengs/`, feed-forward inference only:
-no test-time training); **the weights are under the NVIDIA Internal Scientific
-Research and Development Model License (non-commercial)**. `ffgs.zoo` entries list
-the source, the pinned revision and the license of each checkpoint.
-
-## Results
-
-TokenGS on the DL3DV benchmark (140 scenes of
-[DL3DV-10K-Benchmark](https://huggingface.co/datasets/DL3DV/DL3DV-10K-Benchmark),
-the upstream evaluation index and target views, no test-time training), run with
-the authors' evaluation code and with ffgs on the same scenes, frames and
-checkpoints. For all 11 configurations below, **the Gaussians from ffgs are
-bit-identical to those of the official code in 140/140 scenes**, so both report the
-same means; per scene, the metrics differ by at most 4.2e-4 PSNR, 7.9e-6 SSIM and
-6.6e-5 LPIPS, from rendering (these ffgs runs rendered the Gaussians taken to the
-caller's world frame, the official code in the model frame; rendering the official
-Gaussians with ffgs gives the ffgs images exactly).
-
-| zoo entry | views | PSNR ↑ | SSIM ↑ | LPIPS ↓ | published | Δ PSNR / SSIM / LPIPS |
-|---|---|---|---|---|---|---|
-| `tokengs/dl3dv-4v` | 2 | 19.382 | 0.598 | 0.438 | 19.35 / 0.609 / 0.440 | +0.03 / −0.011 / −0.002 |
-| `tokengs/dl3dv-4v` | 4 | 23.048 | 0.740 | 0.325 | 23.02 / 0.747 / 0.326 | +0.03 / −0.007 / −0.001 |
-| `tokengs/dl3dv-4v` | 6 | 23.715 | 0.759 | 0.310 | 23.69 / 0.766 / 0.311 | +0.03 / −0.007 / −0.001 |
-| `tokengs/dl3dv-2v` | 2 | 20.181 | 0.635 | 0.420 | — | |
-| `tokengs/dl3dv-6v` | 6 | 23.892 | 0.766 | 0.306 | — | |
-| `tokengs/dl3dv-latent-2v-ssim` | 2 | 20.540 | 0.659 | 0.380 | 20.493 / 0.658 / 0.381 | +0.05 / +0.001 / −0.001 |
-| `tokengs/dl3dv-latent-4v-ssim` | 4 | 24.066 | 0.779 | 0.277 | 24.012 / 0.778 / 0.277 | +0.05 / +0.001 / 0.000 |
-| `tokengs/dl3dv-latent-6v-ssim` | 6 | 25.170 | 0.806 | 0.258 | 25.120 / 0.806 / 0.257 | +0.05 / 0.000 / +0.001 |
-| `tokengs/dl3dv-latent-2v-lpips` | 2 | 19.840 | 0.623 | 0.317 | 19.772 / 0.620 / 0.317 | +0.07 / +0.003 / 0.000 |
-| `tokengs/dl3dv-latent-4v-lpips` | 4 | 23.171 | 0.756 | 0.216 | 23.089 / 0.754 / 0.215 | +0.08 / +0.002 / +0.001 |
-| `tokengs/dl3dv-latent-6v-lpips` | 6 | 24.152 | 0.785 | 0.194 | 24.077 / 0.783 / 0.194 | +0.08 / +0.002 / 0.000 |
-
-Published: `tokengs/dl3dv-4v` rows from Table 2 of the paper (the 4-view model
-evaluated with 2, 4 and 6 input views), latent rows from the authors' 2026.6
-release notes; the finetuned 2- and 6-view models have no published numbers. Notes:
-
-- The gaps to the published numbers are the same for the official code and ffgs,
-  so they are not from ffgs. Likely causes, not isolated: torch 2.7.1 / numpy 2.2.6
-  instead of the upstream pins (torch 2.7.0, numpy < 2), and bf16 inference, which
-  is not bit-reproducible across GPU architectures (these runs used an RTX PRO 6000
-  Blackwell; the same scene on an RTX 4090 moves PSNR by a few hundredths). The
-  SSIM of the paper rows is 0.007–0.011 below Table 2 with both; we have not traced
-  why.
-- The unmodified upstream `evaluate.py` matches the benchmark's official-side
-  script within 5e-5 on the paper and finetuned rows. It cannot run the
-  `latent-*-lpips` presets in this setup: it also computes the training loss,
-  whose LPIPS term fails under bf16 autocast, so the benchmark disables that
-  (discarded) loss term.
-
-The scripts (environment setup, data packing, both evaluations, the scene-by-scene
-comparison) are on the
-[`bench/tokengs-dl3dv`](https://github.com/libgs/ffgs/tree/bench/tokengs-dl3dv/benchmarks/tokengs_dl3dv)
-branch.
+The shipped models, their zoo names, licenses, usage notes and results against
+their official code are in
+[docs/models](https://github.com/libgs/ffgs/blob/main/docs/models/index.md),
+one page per model.
+Check the license of a model before use: some are for non-commercial use only.
 
 ## Conventions
 
@@ -133,7 +99,7 @@ coefficients (3DGS / gsplat basis); opacities and RGB / degree-0 colours are
 unchanged. Input c2w whose rotation is not orthonormal or is a reflection (det < 0)
 are rejected.
 
-Models that need poses (TokenGS) raise a `ValueError` naming what is missing.
+Models that need poses raise a `ValueError` naming what is missing.
 Models that predict their own cameras accept `Views(images)` alone, and
 `out.cameras` holds their prediction for the input views, in the same frame as
 `out.gaussians` (`to_world()` moves both):
@@ -159,7 +125,7 @@ Resize + crop is the default, not a requirement. Processor options (in
 | `crop_mode="crop"` | cover the input shape, centre crop — the training rule (default) |
 | `crop_mode="pad"` | fit inside the input shape and pad with `pad_value`; nothing is cut off, K follows the content |
 | `crop_mode="none"` | inputs are already at the model's shape; used as they are |
-| `resize_mode` | built-in kernel: `"bilinear"` (antialiased) or `"lanczos"` |
+| `resize_mode` | built-in kernel: `"bilinear"` (antialiased) or `"lanczos"`; a model's processor may add its own (see its page) |
 | `resize=fn` | your own `fn(images, (h, w)) -> images`, replacing `resize_mode` (not serialised) |
 
 ```python
@@ -237,7 +203,9 @@ model predicts its own cameras; `postprocess`, to model-frame `Gaussians`;
 `render_planes`, near / far in world units, or in model units when the frame is
 `None`; for models that predict cameras, `predicted_cameras`, from the model output
 to model-frame `Cameras`, and `output_frame`, whose default fits the frame to the
-given c2w as above) and a
+given c2w as above; optionally `background` and `render_settings`, the model's
+rasteriser settings such as `radius_clip`, `rasterize_mode` or `clamp`, which
+`pipe.render` uses unless the caller passes them) and a
 `ModelSpec(model_type, model_cls, processor_cls)`. `from_pretrained` resolves the
 `model_type` in `config.json` in this order:
 
@@ -293,6 +261,11 @@ differ from the model's, and run the tests: every shipped entry is checked to
 parse and build offline, and `uv run pytest --network` downloads each one and
 loads it strictly.
 
+Document a new model in `docs/models/<family>.md` (source, licenses of code and
+weights, zoo entries, usage notes, results against the official code; the existing
+pages are the template) and add its row to
+[`docs/models/index.md`](https://github.com/libgs/ffgs/blob/main/docs/models/index.md).
+
 ## Development
 
 ```bash
@@ -310,5 +283,16 @@ with a deliberate change to that path.
 
 ## License
 
-Apache-2.0 (see `LICENSE`). `src/ffgs/image.py` is adapted from pixelSplat (MIT);
-its license is included at the end of `LICENSE`.
+**The ffgs package as distributed is not entirely Apache-2.0: it includes code for
+non-commercial use only.** Its license expression is
+`Apache-2.0 AND MIT AND CC-BY-NC-4.0 AND CC-BY-NC-SA-4.0`:
+
+- the core library is Apache-2.0 (see `LICENSE`); `src/ffgs/image.py` is adapted
+  from pixelSplat (MIT), whose license is included at the end of `LICENSE`;
+- vendored model code under `src/ffgs/models/<family>/` keeps its upstream license.
+  `src/ffgs/models/anysplat/` mixes MIT, Apache-2.0 and non-commercial
+  (CC-BY-NC-4.0, CC-BY-NC-SA-4.0) files; its `LICENSE` lists the license per file;
+- model weights are not part of the package and carry their own licenses.
+
+The code and weight licenses of each model are listed in
+[docs/models](https://github.com/libgs/ffgs/blob/main/docs/models/index.md).

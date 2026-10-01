@@ -8,6 +8,7 @@ import sys
 import pytest
 import torch
 from _dummy import DummyModel, DummyProcessor
+from _empty import meta_parameters
 from safetensors.torch import save_file
 from test_pipeline import _model, _views
 from test_third_party import _fake_hub
@@ -333,7 +334,8 @@ def test_import_and_listing_read_no_entry() -> None:
 def test_shipped_entry_parses_and_builds(name) -> None:
     entry = zoo.get_entry(name)
     spec = get_model_spec(entry.model_type)
-    spec.model_cls(**entry.model)
+    with meta_parameters():  # AnySplat is 1.2B parameters
+        spec.model_cls(**entry.model)
     spec.processor_cls.from_dict(entry.processor)
 
 

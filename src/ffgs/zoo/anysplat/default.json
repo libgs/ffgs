@@ -1,0 +1,34 @@
+{
+  "model_type": "anysplat",
+  "description": "AnySplat, the released model (VGGT-1B backbone, SH degree 4, voxel size 0.002), unposed images at 448x448",
+  "weights": {
+    "repo": "lhjiang/anysplat",
+    "file": "model.safetensors",
+    "revision": "d2e8c343672646041ad4ea518184968f94362f01",
+    "sha256": "1c4de2ba5a29c540b899af901bf02107395b5f0617655d347e262f814b4c0c7c"
+  },
+  "model": {
+    "voxel_size": 0.002,
+    "voxelize": true,
+    "sh_degree": 4,
+    "intermediate_layer_idx": [
+      4,
+      11,
+      17,
+      23
+    ]
+  },
+  "processor": {
+    "image_shape": [
+      448,
+      448
+    ],
+    "resize_mode": "bicubic",
+    "crop_mode": "crop"
+  },
+  "source": {
+    "url": "https://github.com/InternRobotics/AnySplat",
+    "paper": "https://arxiv.org/abs/2505.23716"
+  },
+  "license": "Non-commercial. Weights: MIT (lhjiang/anysplat), fine-tuned from VGGT-1B (facebook/VGGT-1B, CC BY-NC 4.0). Code: MIT, with VGGT code under CC BY-NC 4.0 and Naver code under CC BY-NC-SA 4.0 (see ffgs/models/anysplat/LICENSE)"
+}

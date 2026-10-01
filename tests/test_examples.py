@@ -8,7 +8,12 @@ from pathlib import Path
 import numpy as np
 import pytest
 import torch
-from _dummy import DummyModel, DummyProcessor
+from _dummy import (
+    DummyModel,
+    DummyProcessor,
+    PoseFreeDummyModel,
+    PoseFreeDummyProcessor,
+)
 from PIL import Image
 
 from ffgs import GSPipeline
@@ -106,3 +111,60 @@ def test_infer_nerfstudio_scene_one_view(tmp_path, monkeypatch, capsys) -> None:
     example.main()
     assert (out / "gaussians.ply").exists() and not list(out.glob("render_*.png"))
     assert "no frames between inputs" in capsys.readouterr().out
+
+
+def _image_folder(root: Path, n: int = 6, h: int = 24, w: int = 40) -> Path:
+    root.mkdir(parents=True)
+    for i in reversed(range(n)):
+        pixels = np.random.default_rng(i).integers(0, 256, (h, w, 3), dtype=np.uint8)
+        Image.fromarray(pixels).save(root / f"img_{i:03d}.png")
+    (root / "notes.txt").write_text("not an image")
+    return root
+
+
+@pytest.mark.parametrize("render", [False, pytest.param(True, marks=pytest.mark.gpu)])
+def test_infer_pose_free(tmp_path, monkeypatch, render) -> None:
+    example = _load("infer_pose_free")
+    folder = _image_folder(tmp_path / "images")
+    torch.manual_seed(0)
+    pipe = GSPipeline(PoseFreeDummyModel(), PoseFreeDummyProcessor())
+    model_dir = pipe.save_pretrained(tmp_path / "model")
+    out = tmp_path / "out"
+    argv = ["infer", str(folder), "--model", str(model_dir), "--out", str(out)]
+    argv += ["--num-views", "3"]
+    argv += ["--device", "cuda"] if render else ["--device", "cpu", "--no-render"]
+    monkeypatch.setattr(sys, "argv", argv)
+    outputs = []
+    call = GSPipeline.__call__
+
+    def recording_call(self, views, *args, **kwargs):
+        assert views.intrinsics is None and views.c2w is None
+        outputs.append(call(self, views, *args, **kwargs))
+        return outputs[-1]
+
+    monkeypatch.setattr(GSPipeline, "__call__", recording_call)
+
+    example.main()
+
+    (output,) = outputs
+    assert output.frame is None
+    # The ply holds the Gaussians in the model's frame (there is no other).
+    header, data = (out / "gaussians.ply").read_bytes().split(b"end_header\n")
+    columns = header.count(b"property float")
+    xyz = np.frombuffer(data, dtype="<f4").reshape(-1, columns)[:, :3]
+    np.testing.assert_array_equal(xyz, output.gaussians.means[0].cpu().numpy())
+    # Inputs: images 0, 2, 5 of 0..5 (evenly spaced, by file name).
+    cameras = json.loads((out / "cameras.json").read_text())
+    assert [v["file"] for v in cameras["views"]] == [
+        "img_000.png",
+        "img_002.png",
+        "img_005.png",
+    ]
+    assert cameras["image_shape"] == list(output.cameras.image_shape)
+    c2w = torch.tensor([v["c2w"] for v in cameras["views"]])
+    torch.testing.assert_close(c2w, output.cameras.c2w[0].cpu())
+    k = torch.tensor([v["k_normalized"] for v in cameras["views"]])
+    torch.testing.assert_close(k, output.cameras.normalized_k[0].cpu())
+    renders = sorted(p.name for p in out.glob("render_*.png"))
+    expected = ["render_00000.png", "render_00002.png", "render_00005.png"]
+    assert renders == (expected if render else [])

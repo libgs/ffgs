@@ -229,3 +229,9 @@ src/ffgs/image.py is adapted from pixelSplat
   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   SOFTWARE.
+
+src/ffgs/models/anysplat/ is vendored from AnySplat
+(https://github.com/InternRobotics/AnySplat) and includes code licensed for
+NON-COMMERCIAL USE ONLY (CC BY-NC 4.0 and CC BY-NC-SA 4.0), besides MIT and
+Apache-2.0 code. Each file there keeps its licence header; the per-file licences
+and their full texts are in src/ffgs/models/anysplat/LICENSE.

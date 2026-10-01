@@ -27,7 +27,10 @@ from .processor import Processor
 ENTRY_POINT_GROUP = "ffgs.models"
 
 # model_type -> module that calls `register_model` for it on import.
-_BUILTIN: dict[str, str] = {"tokengs": "ffgs.models.tokengs"}
+_BUILTIN: dict[str, str] = {
+    "anysplat": "ffgs.models.anysplat",
+    "tokengs": "ffgs.models.tokengs",
+}
 
 
 @dataclass(frozen=True)
