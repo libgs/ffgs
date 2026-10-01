@@ -281,12 +281,15 @@ class GSPipeline:
         whichever `space` the Gaussians are in: for model-frame Gaussians the
         cameras and the processor's near / far planes are taken into the model
         frame first. Without a frame (no input poses) there is no world: `cameras`
-        are in the model's frame, like `output.cameras`."""
+        are in the model's frame, like `output.cameras`. The background and other
+        render settings are the processor's (`render_settings`) unless given."""
         near, far = self.processor.render_planes(output.frame)
         if output.space == "model" and output.frame is not None:
             cameras = output.frame.cameras_to_model(cameras)
             near, far = near * output.frame.scale, far * output.frame.scale
         kwargs.setdefault("background", self.processor.background)
+        for key, value in self.processor.render_settings.items():
+            kwargs.setdefault(key, value)
         with torch.autocast(device_type=self.device.type, enabled=False):
             return render_mod.render(
                 output.gaussians, cameras.to(self.device), near=near, far=far, **kwargs

@@ -209,6 +209,13 @@ class Processor:
         return None
 
     @property
+    def render_settings(self) -> dict[str, Any]:
+        """The model's other rasteriser settings: keyword arguments of
+        `ffgs.render.render` (e.g. `radius_clip`, `rasterize_mode`, `clamp`)
+        that `GSPipeline.render` uses unless the caller passes them."""
+        return {}
+
+    @property
     def autocast_dtype(self) -> torch.dtype | None:
         return None
 
