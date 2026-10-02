@@ -95,6 +95,11 @@ def _fake_render(gaussians, cameras, *, near, far, background=None, **kwargs):
         means[:, None] - c2w[:, :, None, :3, 3], dim=-1
     )
     colors = eval_sh(gaussians.colors.double()[:, None], dirs)
+    if isinstance(near, torch.Tensor):  # one per sample
+        near, far = (
+            near.double()[:, None, None, None],
+            far.double()[:, None, None, None],
+        )
     return {
         "pixels": pixels[..., :2],
         "near": depth / near,

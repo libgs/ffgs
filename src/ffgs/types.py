@@ -8,8 +8,9 @@ Conventions, the same for every model:
 - intrinsics: pixel-unit K [.., 3, 3] for the image size given, or the normalised K
   (fx / W, cx / W, fy / H, cy / H) with `normalized_intrinsics=True`; zero skew
   (the renderers have no skew term, so a nonzero K[0, 1] is rejected);
+- c2w and intrinsics are optional for models that predict cameras;
 - `Gaussians` come back in the model's frame; `GSOutput.to_world()` takes them
-  to the world frame of the c2w they were predicted from.
+  to the world frame of the input c2w (when there were any).
 
 Unbatched inputs get a leading batch dimension of 1; outputs stay batched.
 """
@@ -114,11 +115,15 @@ class Cameras:
 
 @dataclass
 class Views:
-    """Posed input images. See the module docstring for conventions."""
+    """Input images, posed or not. See the module docstring for conventions.
+
+    `intrinsics` and `c2w` are optional: models that predict cameras (pose-free
+    models) run without them; models that need them say so (`require`).
+    """
 
     images: torch.Tensor
-    intrinsics: torch.Tensor
-    c2w: torch.Tensor
+    intrinsics: torch.Tensor | None = None
+    c2w: torch.Tensor | None = None
     normalized_intrinsics: bool = False
 
     def __post_init__(self) -> None:
@@ -128,27 +133,51 @@ class Views:
         if images.shape[2] != 3:
             raise ValueError(f"images must be RGB, got {tuple(images.shape)}")
         self.images = images
-        self.intrinsics = _batched(self.intrinsics, 4, "intrinsics")
-        _check_finite(self.intrinsics, "intrinsics")
-        _check_no_skew(self.intrinsics)
-        self.c2w = _batched(self.c2w, 4, "c2w")
-        _check_finite(self.c2w, "c2w")
-        if not images.shape[:2] == self.intrinsics.shape[:2] == self.c2w.shape[:2]:
-            raise ValueError("images, intrinsics and c2w disagree on [B, V]")
+        if self.intrinsics is not None:
+            self.intrinsics = _batched(self.intrinsics, 4, "intrinsics")
+            _check_finite(self.intrinsics, "intrinsics")
+            _check_no_skew(self.intrinsics)
+        if self.c2w is not None:
+            self.c2w = _batched(self.c2w, 4, "c2w")
+            _check_finite(self.c2w, "c2w")
+        for name in ("intrinsics", "c2w"):
+            value = getattr(self, name)
+            if value is not None and value.shape[:2] != images.shape[:2]:
+                raise ValueError(
+                    f"images {tuple(images.shape)} and {name} {tuple(value.shape)} "
+                    "disagree on [B, V]"
+                )
 
     @property
     def image_shape(self) -> tuple[int, int]:
         return tuple(self.images.shape[-2:])
 
     @property
+    def has_poses(self) -> bool:
+        return self.c2w is not None
+
+    def require(self, *names: str, by: str) -> None:
+        """Raise unless the fields `names` ("intrinsics", "c2w") are given."""
+        missing = [name for name in names if getattr(self, name) is None]
+        if missing:
+            raise ValueError(
+                f"{by} needs {' and '.join(names)}; these views have no "
+                f"{' or '.join(missing)}"
+            )
+
+    @property
     def cameras(self) -> Cameras:
+        self.require("c2w", "intrinsics", by="Views.cameras")
         return Cameras(
             self.c2w, self.intrinsics, self.image_shape, self.normalized_intrinsics
         )
 
     @property
     def normalized_k(self) -> torch.Tensor:
-        return self.cameras.normalized_k
+        self.require("intrinsics", by="Views.normalized_k")
+        if self.normalized_intrinsics:
+            return self.intrinsics.float()
+        return normalize_intrinsics(self.intrinsics, self.image_shape)
 
 
 @dataclass

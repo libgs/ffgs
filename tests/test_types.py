@@ -116,3 +116,19 @@ def test_views_convert_uint8_and_check_shapes() -> None:
         Views(images, torch.eye(3).repeat(3, 1, 1), torch.eye(4).repeat(2, 1, 1))
     with pytest.raises(ValueError, match="RGB"):
         Views(images[:, :1], torch.eye(3).repeat(2, 1, 1), torch.eye(4).repeat(2, 1, 1))
+
+
+def test_views_poses_and_intrinsics_are_optional() -> None:
+    images = torch.zeros(2, 3, 4, 6)
+    bare = Views(images)
+    assert bare.c2w is None and bare.intrinsics is None and not bare.has_poses
+    with pytest.raises(ValueError, match="Views.cameras needs c2w and intrinsics"):
+        bare.cameras
+    with pytest.raises(ValueError, match="needs intrinsics; these views have no"):
+        bare.normalized_k
+    posed = Views(images, c2w=torch.eye(4).repeat(2, 1, 1))
+    assert posed.has_poses and posed.intrinsics is None
+    with pytest.raises(ValueError, match="no intrinsics"):
+        posed.require("c2w", "intrinsics", by="X")
+    with pytest.raises(ValueError, match="disagree"):
+        Views(images, c2w=torch.eye(4).repeat(3, 1, 1))

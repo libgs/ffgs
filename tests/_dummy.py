@@ -9,6 +9,7 @@ from huggingface_hub import PyTorchModelHubMixin
 from torch import nn
 
 from ffgs import (
+    Cameras,
     Gaussians,
     ImageFitConfig,
     ModelSpec,
@@ -17,10 +18,11 @@ from ffgs import (
     Views,
     register_model,
 )
-from ffgs.geometry import ModelFrame, anchored_frame
+from ffgs.geometry import ModelFrame, anchored_frame, quat_to_matrix
 from ffgs.types import sh_degree_from_channels
 
 MODEL_TYPE = "ffgs-test-dummy"
+POSE_FREE_MODEL_TYPE = "ffgs-test-dummy-pose-free"
 
 
 class DummyModel(nn.Module, PyTorchModelHubMixin):
@@ -88,4 +90,75 @@ def gaussians_from_packed(packed: torch.Tensor) -> Gaussians:
 
 SPEC = register_model(
     ModelSpec(model_type=MODEL_TYPE, model_cls=DummyModel, processor_cls=DummyProcessor)
+)
+
+
+class PoseFreeDummyModel(nn.Module, PyTorchModelHubMixin):
+    """Images only in; packed Gaussians and per-view cameras (wxyz quat +
+    translation) out, both in its own frame: cameras near the identity rotation,
+    spread along x, the Gaussians a few units in front of them."""
+
+    def __init__(self, num_gaussians: int = 6, sh_degree: int | None = 2) -> None:
+        super().__init__()
+        self.num_gaussians = num_gaussians
+        self.sh_degree = sh_degree
+        colors = 3 if sh_degree is None else 3 * (sh_degree + 1) ** 2
+        self.gaussians = nn.Linear(3, num_gaussians * (11 + colors))
+        self.cameras = nn.Linear(3, 7)
+
+    def forward(self, model_input: dict[str, torch.Tensor]) -> dict[str, torch.Tensor]:
+        per_view = model_input["images"].mean(dim=(3, 4))  # [B, V, 3]
+        packed = self.gaussians(per_view.mean(dim=1))
+        packed = packed.reshape(packed.shape[0], self.num_gaussians, -1)
+        packed = torch.cat(
+            [packed[..., :2], packed[..., 2:3] + 4.0, packed[..., 3:]], -1
+        )
+        cameras = self.cameras(per_view)
+        quat = torch.cat(
+            [torch.ones_like(cameras[..., :1]), 0.1 * cameras[..., :3]], -1
+        )
+        offset = torch.arange(per_view.shape[1], dtype=packed.dtype)[:, None]
+        offset = offset.to(packed.device) * packed.new_tensor([0.5, 0.0, 0.0])
+        translation = 0.3 * cameras[..., 3:6] + offset
+        return {"gaussians": packed, "cameras": torch.cat([quat, translation], -1)}
+
+
+@dataclass
+class PoseFreeDummyProcessorConfig(ImageFitConfig):
+    image_shape: list[int] = field(default_factory=lambda: [16, 32])
+    znear: float = 0.01
+    zfar: float = 100.0
+
+
+class PoseFreeDummyProcessor(Processor):
+    config_cls = PoseFreeDummyProcessorConfig
+
+    def preprocess(self, views: Views, device: torch.device) -> Prepared:
+        fitted = self.fit_views(views)
+        return Prepared({"images": fitted.images.float().to(device)}, None)
+
+    def postprocess(self, model_output: dict[str, torch.Tensor]) -> Gaussians:
+        return gaussians_from_packed(model_output["gaussians"])
+
+    def predicted_cameras(self, model_output: dict[str, torch.Tensor]) -> Cameras:
+        cameras = model_output["cameras"]
+        c2w = torch.eye(4).repeat(*cameras.shape[:2], 1, 1)
+        c2w[..., :3, :3] = quat_to_matrix(cameras[..., :4])
+        c2w[..., :3, 3] = cameras[..., 4:]
+        k = torch.tensor([[1.2, 0, 0.5], [0, 1.2, 0.5], [0, 0, 1]])
+        k = k.expand(*cameras.shape[:2], 3, 3)
+        return Cameras(c2w, k, tuple(self.config.image_shape), True)
+
+    def render_planes(self, frame: ModelFrame | None) -> tuple:
+        if frame is None:
+            return self.config.znear, self.config.zfar
+        return self.config.znear / frame.scale, self.config.zfar / frame.scale
+
+
+POSE_FREE_SPEC = register_model(
+    ModelSpec(
+        model_type=POSE_FREE_MODEL_TYPE,
+        model_cls=PoseFreeDummyModel,
+        processor_cls=PoseFreeDummyProcessor,
+    )
 )

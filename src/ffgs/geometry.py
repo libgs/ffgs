@@ -41,11 +41,98 @@ def _check_rotation(r: torch.Tensor, what: str) -> None:
 
 
 @dataclass
+class PoseResiduals:
+    """How far the cameras a fitted frame maps to the world land from the given
+    ones, per view [B, V]."""
+
+    rotation_deg: torch.Tensor  # angle between the mapped and the given rotation
+    center_error: torch.Tensor  # distance between the camera centres, world units
+    # center_error over the RMS distance of the given centres from their mean.
+    relative_center_error: torch.Tensor
+
+
+@dataclass
 class ModelFrame:
-    """world -> model: x_m = scale * inverse(anchor_c2w) @ x_w, per sample."""
+    """world -> model: x_m = scale * inverse(anchor_c2w) @ x_w, per sample.
+
+    `scale` is one number for the batch, or a [B] tensor (fitted frames).
+    `residuals` is set on frames fitted to given poses (`ModelFrame.fit`).
+    """
 
     anchor_c2w: torch.Tensor  # [B, 4, 4], world frame
-    scale: float
+    scale: float | torch.Tensor
+    residuals: PoseResiduals | None = None
+
+    @classmethod
+    def fit(cls, predicted_c2w: torch.Tensor, given_c2w: torch.Tensor) -> ModelFrame:
+        """The frame that maps a model's predicted cameras `predicted_c2w` onto
+        the caller's `given_c2w` (both [B, V, 4, 4], the same views).
+
+        Closed form over all V >= 2 views, in fp64: the rotation is the chordal
+        mean of R_given R_predicted^T (SVD, projected to det +1); with it fixed,
+        scale and translation are the least-squares fit of the camera centres.
+        """
+        pred, given = predicted_c2w.double(), given_c2w.to(predicted_c2w).double()
+        if pred.shape != given.shape:
+            raise ValueError(
+                f"predicted cameras {tuple(pred.shape)} and given c2w "
+                f"{tuple(given.shape)} disagree"
+            )
+        if pred.shape[1] < 2:
+            raise ValueError(
+                f"fitting a frame to given poses needs at least 2 views, got "
+                f"{pred.shape[1]}"
+            )
+        _check_rotation(given[..., :3, :3], "given c2w")
+        _check_rotation(pred[..., :3, :3], "predicted c2w")
+        for what, c2w in (("given", given), ("predicted", pred)):
+            if not torch.isfinite(c2w[..., :3, 3]).all():
+                raise ValueError(f"{what} c2w: the camera centres are not finite")
+        r_pred, r_given = pred[..., :3, :3], given[..., :3, :3]
+        c_pred, c_given = pred[..., :3, 3], given[..., :3, 3]
+        u, _, vh = torch.linalg.svd((r_given @ r_pred.transpose(-1, -2)).sum(dim=1))
+        flip = torch.ones_like(u[..., 0])
+        flip[..., -1] = torch.sign(torch.linalg.det(u @ vh))
+        rotation = u @ torch.diag_embed(flip) @ vh  # [B, 3, 3]
+
+        d_pred = c_pred - c_pred.mean(dim=1, keepdim=True)
+        d_given = c_given - c_given.mean(dim=1, keepdim=True)
+        spread = (d_pred**2).sum(dim=(1, 2))
+        extent = (d_given**2).sum(dim=-1).mean(dim=1).sqrt()  # RMS, given
+        if (spread <= 1e-12 * (c_pred**2).sum(dim=(1, 2)).clamp_min(1e-300)).any():
+            raise ValueError("the predicted camera centres coincide: no scale to fit")
+        rotated = torch.einsum("bij,bvj->bvi", rotation, d_pred)
+        scale = (d_given * rotated).sum(dim=(1, 2)) / spread  # model -> world
+        if (scale <= 0).any():
+            raise ValueError(
+                "the given poses do not fit the predicted cameras (fitted scale "
+                f"{scale.tolist()} <= 0)"
+            )
+        translation = c_given.mean(dim=1) - scale[:, None] * torch.einsum(
+            "bij,bj->bi", rotation, c_pred.mean(dim=1)
+        )
+
+        delta = r_given @ (rotation[:, None] @ r_pred).transpose(-1, -2)
+        cos = (delta.diagonal(dim1=-2, dim2=-1).sum(-1) - 1) / 2
+        skew = delta - delta.transpose(-1, -2)  # atan2: accurate at small angles
+        sin = torch.stack([skew[..., 2, 1], skew[..., 0, 2], skew[..., 1, 0]], -1)
+        sin = sin.norm(dim=-1) / 2
+        mapped_c = scale[:, None, None] * torch.einsum("bij,bvj->bvi", rotation, c_pred)
+        error = (mapped_c + translation[:, None] - c_given).norm(dim=-1)
+        residuals = PoseResiduals(
+            rotation_deg=torch.rad2deg(torch.atan2(sin, cos)).float(),
+            center_error=error.float(),
+            relative_center_error=(error / extent[:, None].clamp_min(1e-300)).float(),
+        )
+        anchor = torch.eye(4, dtype=torch.float64, device=pred.device)
+        anchor = anchor.repeat(pred.shape[0], 1, 1)
+        anchor[:, :3, :3] = rotation
+        anchor[:, :3, 3] = translation
+        return cls(
+            anchor_c2w=anchor.float(),
+            scale=(1 / scale).float(),
+            residuals=residuals,
+        )
 
     def c2w_to_model(self, c2w: torch.Tensor) -> torch.Tensor:
         """World c2w [B, V, 4, 4] -> model frame.
@@ -64,7 +151,9 @@ class ModelFrame:
             norm = torch.bmm(canonical, torch.inverse(anchor[None]))
             out.append(torch.bmm(norm.repeat(poses.shape[0], 1, 1), poses))
         model = torch.stack(out)
-        if self.scale != 1.0:
+        if isinstance(self.scale, torch.Tensor):
+            model[..., :3, 3] *= self.scale.to(model)[:, None, None]
+        elif self.scale != 1.0:
             model[..., :3, 3] *= self.scale
         return model
 
@@ -76,10 +165,12 @@ class ModelFrame:
     def model_to_world(self) -> Similarity:
         """model -> world: x_w = anchor_c2w @ (x_m / scale)."""
         anchor = self.anchor_c2w
+        if isinstance(self.scale, torch.Tensor):
+            scale = 1.0 / self.scale.to(anchor)
+        else:
+            scale = torch.full_like(anchor[:, 0, 0], 1.0 / self.scale)
         return Similarity(
-            rotation=anchor[:, :3, :3],
-            scale=torch.full_like(anchor[:, 0, 0], 1.0 / self.scale),
-            translation=anchor[:, :3, 3],
+            rotation=anchor[:, :3, :3], scale=scale, translation=anchor[:, :3, 3]
         )
 
 
@@ -103,6 +194,18 @@ class Similarity:
             raise ValueError(f"scale must be finite and > 0, got {self.scale}")
         if not torch.isfinite(self.translation).all():
             raise ValueError(f"translation must be finite, got {self.translation}")
+
+    def apply_cameras(self, cameras: Cameras) -> Cameras:
+        """Camera poses moved with the scene: rotations by `rotation`, centres
+        as points. Intrinsics are unchanged."""
+        c2w = cameras.c2w
+        rotation = self.rotation.to(c2w)[:, None]
+        out = c2w.clone()
+        out[..., :3, :3] = rotation @ c2w[..., :3, :3]
+        centers = (c2w[..., :3, 3] * self.scale.to(c2w)[:, None, None])[..., None]
+        out[..., :3, 3] = (rotation @ centers)[..., 0]
+        out[..., :3, 3] += self.translation.to(c2w)[:, None]
+        return replace(cameras, c2w=out)
 
     def apply(self, gaussians: Gaussians) -> Gaussians:
         """Each attribute as the transform acts on it: means fully, scales by

@@ -3,7 +3,8 @@
 A processor owns everything between the standard `Views` / `Gaussians` and one
 model's tensors: resizing to the training rule, normalising cameras into the
 model's frame (the `ModelFrame` that also takes predictions back to the caller's
-world frame), and building the model input. Its settings are plain JSON so they
+world frame; fitted to the given poses for models that predict cameras), and
+building the model input. Its settings are plain JSON so they
 travel with the weights.
 
 Configs that subclass `ImageFitConfig` get `fit_views` / `fit_cameras`: resize +
@@ -35,10 +36,14 @@ PROCESSOR_CONFIG_NAME = "processor_config.json"
 
 @dataclass
 class Prepared:
-    """A processor's output for one call: what the model eats, and the frame."""
+    """A processor's output for one call: what the model eats, and the frame.
+
+    `frame` is None for models that predict their cameras: it is then fitted
+    after the model, from the predicted cameras (see `Processor.output_frame`).
+    """
 
     model_input: Any
-    frame: ModelFrame
+    frame: ModelFrame | None
 
 
 @dataclass
@@ -91,14 +96,21 @@ class Processor:
     def fit_views(self, views: Views, image_shape: list[int] | None = None) -> Views:
         """Bring `views` to `image_shape` (default: the model's) by the config's
         `crop_mode`. Also the way to derive ground truth for target views. Returns
-        normalised intrinsics; c2w untouched."""
+        normalised intrinsics (None if `views` had none); c2w untouched."""
         cfg = self._fit_config()
         shape = tuple(image_shape or cfg.image_shape)
+        if views.intrinsics is None:
+            # The images are fitted the same way whatever K is; any valid one does.
+            source_k = torch.tensor(
+                [[1.0, 0, 0.5], [0, 1.0, 0.5], [0, 0, 1]], device=views.images.device
+            ).expand(*views.images.shape[:2], 3, 3)
+        else:
+            source_k = views.normalized_k
         images, intrinsics = [], []
         for i in range(views.images.shape[0]):
             img, k = fit_images(
                 views.images[i],
-                views.normalized_k[i],
+                source_k[i],
                 shape,
                 resize_mode=cfg.resize_mode,
                 crop_mode=cfg.crop_mode,
@@ -109,7 +121,7 @@ class Processor:
             intrinsics.append(k)
         return Views(
             torch.stack(images),
-            torch.stack(intrinsics),
+            None if views.intrinsics is None else torch.stack(intrinsics),
             views.c2w,
             normalized_intrinsics=True,
         )
@@ -170,8 +182,26 @@ class Processor:
         """Raw model output -> model-frame `Gaussians`."""
         raise NotImplementedError
 
-    def render_planes(self, frame: ModelFrame) -> tuple[float, float]:
-        """(near, far) in world units for Gaussians predicted in `frame`."""
+    def predicted_cameras(self, model_output: Any) -> Cameras | None:
+        """The input cameras a model predicts, in its frame (normalised K for the
+        model's input images); None for models that take cameras as input."""
+        return None
+
+    def output_frame(
+        self, views: Views, prepared: Prepared, cameras: Cameras | None
+    ) -> ModelFrame | None:
+        """The model frame of this call. Posed models fix it in `preprocess`;
+        for models that predict cameras it is fitted to the given poses over all
+        views (`ModelFrame.fit`), and None when there are none."""
+        if prepared.frame is not None:
+            return prepared.frame
+        if cameras is None or views.c2w is None:
+            return None
+        return ModelFrame.fit(cameras.c2w, views.c2w)
+
+    def render_planes(self, frame: ModelFrame | None) -> tuple[float, float]:
+        """(near, far) for Gaussians predicted in `frame`: in world units, or in
+        model units when there is no frame (no input poses)."""
         raise NotImplementedError
 
     @property

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from contextlib import nullcontext
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from itertools import chain
 from pathlib import Path
 from typing import Any
@@ -46,30 +46,48 @@ SPACES = ("model", "world")
 
 @dataclass
 class GSOutput:
-    """Predicted Gaussians and the model frame they were predicted in.
+    """Predicted Gaussians, the model frame they were predicted in, and the input
+    cameras when the model predicts them.
 
-    `gaussians` are in `space`: `"model"`, the model's own frame, as `pipe(views)`
-    returns them (what the model's official code produces); or `"world"`, the frame
-    of the input c2w, after `to_world()`. `frame` is the model frame either way.
+    `gaussians` (and `cameras`) are in `space`: `"model"`, the model's own frame,
+    as `pipe(views)` returns them (what the model's official code produces); or
+    `"world"`, the frame of the input c2w, after `to_world()`. `frame` is the
+    model frame either way; it is None when the model predicts its cameras and the
+    views had no poses, and then there is no world frame to go to.
     """
 
     gaussians: Gaussians
-    frame: ModelFrame
+    frame: ModelFrame | None
     space: str = "model"
+    # Predicted input cameras (normalised K for the model's input images).
+    cameras: Cameras | None = None
 
     def __post_init__(self) -> None:
         if self.space not in SPACES:
             raise ValueError(f"space must be one of {SPACES}, got {self.space!r}")
+        if self.space == "world" and self.frame is None:
+            raise ValueError("world-frame output needs the frame it came from")
 
     def to_world(self) -> GSOutput:
-        """The same output with fp32 Gaussians in the world frame of the input c2w
-        (unchanged if already there). Rejects input c2w whose rotation is not
-        proper (non-orthonormal or a reflection)."""
+        """The same output with fp32 Gaussians (and cameras) in the world frame of
+        the input c2w (unchanged if already there). Rejects input c2w whose rotation
+        is not proper (non-orthonormal or a reflection), and outputs without a
+        frame (a model that predicts its cameras, run without poses)."""
         if self.space == "world":
             return self
-        gaussians = self.gaussians.to(dtype=torch.float32)
-        gaussians = self.frame.model_to_world().apply(gaussians)
-        return GSOutput(gaussians=gaussians, frame=self.frame, space="world")
+        if self.frame is None:
+            raise ValueError(
+                "this output has no world frame: the model predicts its own "
+                "cameras and the views had no poses (c2w). Its Gaussians and "
+                "`cameras` are in the model's frame; give Views c2w to place them "
+                "in yours"
+            )
+        to_world = self.frame.model_to_world()
+        gaussians = to_world.apply(self.gaussians.to(dtype=torch.float32))
+        cameras = self.cameras
+        if cameras is not None:
+            cameras = to_world.apply_cameras(replace(cameras, c2w=cameras.c2w.float()))
+        return GSOutput(gaussians, self.frame, space="world", cameras=cameras)
 
 
 class GSPipeline:
@@ -240,13 +258,17 @@ class GSPipeline:
     @torch.no_grad()
     def __call__(self, views: Views, **options: Any) -> GSOutput:
         """Predict Gaussians from `views`, in the model frame (`out.to_world()` for
-        the frame of `views.c2w`). `options` go to the processor (e.g.
-        `scene_scale=`)."""
+        the frame of `views.c2w`). Models that predict cameras run without c2w,
+        and with c2w fit their frame to them (`out.frame.residuals`). `options`
+        go to the processor (e.g. `scene_scale=`)."""
         with torch.autocast(device_type=self.device.type, enabled=False):
             prepared = self.processor.preprocess(views, self.device, **options)
         with self.autocast():
             raw = self.model(prepared.model_input)
-        return GSOutput(self.processor.postprocess(raw), prepared.frame)
+        gaussians = self.processor.postprocess(raw)
+        cameras = self.processor.predicted_cameras(raw)
+        frame = self.processor.output_frame(views, prepared, cameras)
+        return GSOutput(gaussians, frame, cameras=cameras)
 
     @torch.no_grad()
     def render(
@@ -258,9 +280,10 @@ class GSPipeline:
         """Render `output` at `cameras`, given in the world frame of the input c2w
         whichever `space` the Gaussians are in: for model-frame Gaussians the
         cameras and the processor's near / far planes are taken into the model
-        frame first."""
+        frame first. Without a frame (no input poses) there is no world: `cameras`
+        are in the model's frame, like `output.cameras`."""
         near, far = self.processor.render_planes(output.frame)
-        if output.space == "model":
+        if output.space == "model" and output.frame is not None:
             cameras = output.frame.cameras_to_model(cameras)
             near, far = near * output.frame.scale, far * output.frame.scale
         kwargs.setdefault("background", self.processor.background)

@@ -31,9 +31,9 @@ gsplat (the `render` extra) is imported only when rendering.
 | | |
 |---|---|
 | images | float in [0, 1] (uint8 accepted), `[V, 3, H, W]` or `[B, V, 3, H, W]`, any resolution |
-| c2w | camera-to-world, OpenCV axes (x right, y down, z forward) |
-| intrinsics | pixel K for the image size given, or normalised K with `normalized_intrinsics=True` |
-| output | `GSOutput`: `Gaussians` (means, scales, wxyz quats, opacities, SH or RGB colours) in the model's frame, and that frame |
+| c2w | camera-to-world, OpenCV axes (x right, y down, z forward); optional for models that predict their own cameras |
+| intrinsics | pixel K for the image size given, or normalised K with `normalized_intrinsics=True`; optional like c2w |
+| output | `GSOutput`: `Gaussians` (means, scales, wxyz quats, opacities, SH or RGB colours) in the model's frame, that frame (or `None`), and the input cameras the model predicted (or `None`) |
 
 A processor reproduces its model's training preprocessing: rescale to cover the
 model's input size, centre crop (normalised principal point kept, as in training),
@@ -55,6 +55,24 @@ the rotation, view-dependent SH colours of any degree by an exact rotation of th
 coefficients (3DGS / gsplat basis); opacities and RGB / degree-0 colours are
 unchanged. Input c2w whose rotation is not orthonormal or is a reflection (det < 0)
 are rejected.
+
+Models that need poses raise a `ValueError` naming what is missing.
+Models that predict their own cameras accept `Views(images)` alone, and
+`out.cameras` holds their prediction for the input views, in the same frame as
+`out.gaussians` (`to_world()` moves both):
+
+| views | `out.frame` | `to_world()` | `pipe.render(out, cameras)` |
+|---|---|---|---|
+| without c2w | `None`: there is no world frame | raises | `cameras` in the model's frame, e.g. `out.cameras`; near / far in model units |
+| with c2w (V ≥ 2) | fitted to the given c2w | as above | as above: `cameras` in the world frame of the input c2w |
+
+With c2w, the frame is one closed-form fit over all input views of the predicted
+cameras onto the given ones: the rotation is the mean of the per-view rotations
+(SVD, det +1), then scale and translation are the least-squares fit of the camera
+centres. The given c2w do not enter the model. `out.frame.residuals` reports how
+well they agree, per view: rotation error in degrees, centre error in world
+units, and centre error relative to the RMS spread of the given centres. Fewer
+than 2 views, coincident predicted centres or a fit with negative scale raise.
 
 Resize + crop is the default, not a requirement. Processor options (in
 `processor_config.json` or `processor_overrides=`):
@@ -137,8 +155,12 @@ pipe = GSPipeline.from_pretrained("owner/family-repo", subfolder="variant",
 ## Adding a model
 
 A model is a model class with `PyTorchModelHubMixin`, a `Processor` subclass
-(`preprocess`, returning the model input and its `ModelFrame`; `postprocess`, to
-model-frame `Gaussians`; `render_planes`, near / far in world units) and a
+(`preprocess`, returning the model input and its `ModelFrame`, or `None` when the
+model predicts its own cameras; `postprocess`, to model-frame `Gaussians`;
+`render_planes`, near / far in world units, or in model units when the frame is
+`None`; for models that predict cameras, `predicted_cameras`, from the model output
+to model-frame `Cameras`, and `output_frame`, whose default fits the frame to the
+given c2w as above) and a
 `ModelSpec(model_type, model_cls, processor_cls)`. `from_pretrained` resolves the
 `model_type` in `config.json` in this order:
 

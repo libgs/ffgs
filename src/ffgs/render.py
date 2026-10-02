@@ -26,14 +26,15 @@ def render(
     gaussians: Gaussians,
     cameras: Cameras,
     *,
-    near: float,
-    far: float,
+    near: float | torch.Tensor,
+    far: float | torch.Tensor,
     background: Sequence[float] | None = (0.5, 0.5, 0.5),
     render_depth: bool = False,
 ) -> dict[str, torch.Tensor]:
     """-> {"images": [B, V, 3, H, W], "alphas": [B, V, 1, H, W], ["depths"]}.
 
-    `near` / `far` are in the units of the frame the Gaussians and cameras share.
+    `near` / `far` are in the units of the frame the Gaussians and cameras share:
+    one value, or one per sample ([B]).
     """
     rasterization = _rasterization()
     h, w = cameras.image_shape
@@ -67,8 +68,8 @@ def render(
             Ks=ks[i],
             width=w,
             height=h,
-            near_plane=near,
-            far_plane=far,
+            near_plane=_per_sample(near, i),
+            far_plane=_per_sample(far, i),
             packed=False,
             backgrounds=backgrounds,
             render_mode="RGB+ED" if render_depth else "RGB",
@@ -83,3 +84,9 @@ def render(
     if render_depth:
         out["depths"] = torch.stack(depths)
     return out
+
+
+def _per_sample(value: float | torch.Tensor, index: int) -> float:
+    if isinstance(value, torch.Tensor):
+        return float(value.reshape(-1)[index] if value.numel() > 1 else value)
+    return value
