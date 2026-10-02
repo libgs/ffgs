@@ -2,8 +2,9 @@
 
 A processor owns everything between the standard `Views` / `Gaussians` and one
 model's tensors: resizing to the training rule, normalising cameras into the
-model's frame, building the model input, and mapping predictions back to the
-caller's world frame. Its settings are plain JSON so they travel with the weights.
+model's frame (the `ModelFrame` that also takes predictions back to the caller's
+world frame), and building the model input. Its settings are plain JSON so they
+travel with the weights.
 
 Configs that subclass `ImageFitConfig` get `fit_views` / `fit_cameras`: resize +
 centre crop by default (the training rule), or pad / pass-through, and optionally a

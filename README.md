@@ -1,7 +1,8 @@
 # ffgs — standard inference for feed-forward 3D Gaussian Splatting
 
 One way to load and run feed-forward 3D Gaussian Splatting models: posed images in,
-Gaussians in **your** world frame out, whatever model is behind it.
+Gaussians out — in the model's own frame, or in **your** world frame with one call —
+whatever model is behind it.
 
 > Early development: the core interface, third-party loading and the model zoo
 > are in place; models are being added.
@@ -10,9 +11,9 @@ Gaussians in **your** world frame out, whatever model is behind it.
 from ffgs import Cameras, GSPipeline, Views
 
 pipe = GSPipeline.from_pretrained("family/variant", device="cuda")  # or a path / Hub repo
-out = pipe(Views(images, intrinsics, c2w))          # -> GSOutput
-out.gaussians.save_ply("scene.ply")                  # standard 3DGS ply
-images = pipe.render(out, Cameras(c2w_new, k_new, (h, w)))["images"]
+out = pipe(Views(images, intrinsics, c2w))          # -> GSOutput, in the model's frame
+images = pipe.render(out, Cameras(c2w_new, k_new, (h, w)))["images"]  # cameras in your frame
+out.to_world().gaussians.save_ply("scene.ply")      # standard 3DGS ply, in the frame of c2w
 ```
 
 ## Install
@@ -32,12 +33,28 @@ gsplat (the `render` extra) is imported only when rendering.
 | images | float in [0, 1] (uint8 accepted), `[V, 3, H, W]` or `[B, V, 3, H, W]`, any resolution |
 | c2w | camera-to-world, OpenCV axes (x right, y down, z forward) |
 | intrinsics | pixel K for the image size given, or normalised K with `normalized_intrinsics=True` |
-| output | `Gaussians` (means, scales, wxyz quats, opacities, SH or RGB colours) in the world frame of the input c2w |
+| output | `GSOutput`: `Gaussians` (means, scales, wxyz quats, opacities, SH or RGB colours) in the model's frame, and that frame |
 
 A processor reproduces its model's training preprocessing: rescale to cover the
 model's input size, centre crop (normalised principal point kept, as in training),
 cameras relative to the first input view, translations times a model-specific
-`scene_scale`. Predictions are mapped back by the inverse similarity, SH included.
+`scene_scale`. The model predicts in that normalised frame, and that is where
+`pipe(views)` leaves the Gaussians (`out.space == "model"`), exactly as the
+model's own code produces them.
+
+| | Gaussians in |
+|---|---|
+| `out = pipe(views)` | the model's frame (`out.frame`: world → model) |
+| `out.to_world()` | the world frame of the input c2w (fp32) |
+| `out.gaussians.save_ply(path)` | whichever frame `out` is in: `out.to_world().gaussians.save_ply(path)` for a ply that lines up with your cameras |
+| `pipe.render(out, cameras)` | either: `cameras` are always in the world frame of the input c2w, and are taken (with near / far) into the model's frame when needed |
+
+`to_world()` is one similarity transform for every model — rotation, uniform scale
+and translation — applied per attribute: means fully, scales by the scale, quats by
+the rotation, view-dependent SH colours of any degree by an exact rotation of their
+coefficients (3DGS / gsplat basis); opacities and RGB / degree-0 colours are
+unchanged. Input c2w whose rotation is not orthonormal or is a reflection (det < 0)
+are rejected.
 
 Resize + crop is the default, not a requirement. Processor options (in
 `processor_config.json` or `processor_overrides=`):
@@ -120,7 +137,8 @@ pipe = GSPipeline.from_pretrained("owner/family-repo", subfolder="variant",
 ## Adding a model
 
 A model is a model class with `PyTorchModelHubMixin`, a `Processor` subclass
-(`preprocess`, `postprocess`, `render_planes`) and a
+(`preprocess`, returning the model input and its `ModelFrame`; `postprocess`, to
+model-frame `Gaussians`; `render_planes`, near / far in world units) and a
 `ModelSpec(model_type, model_cls, processor_cls)`. `from_pretrained` resolves the
 `model_type` in `config.json` in this order:
 

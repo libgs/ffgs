@@ -1,7 +1,8 @@
 """Standard inference for feed-forward 3D Gaussian Splatting models.
 
-Posed images in (`Views`), Gaussians in the caller's world frame out, one
-`GSPipeline.from_pretrained` for every registered model. See README.md.
+Posed images in (`Views`), Gaussians out (in the model's frame, or the caller's
+world frame with `out.to_world()`), one `GSPipeline.from_pretrained` for every
+registered model. See README.md.
 
 Depends on torch, torchvision, numpy, pillow, huggingface_hub and safetensors;
 gsplat is imported only when rendering (`pip install ffgs[render]`).

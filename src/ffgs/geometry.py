@@ -3,18 +3,41 @@
 Feed-forward models are trained on normalised cameras: here, every pose relative to
 the first context view, then translations scaled by a constant `scene_scale`. A
 `ModelFrame` records that normalisation per sample, so inputs go in with exactly the
-training arithmetic and predicted Gaussians come back in the caller's world frame.
+training arithmetic, and predicted Gaussians can be taken to the caller's world
+frame by one `Similarity` shared by every model (SH rotated to any degree).
 """
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, replace
 
 import torch
 
 from .types import Cameras, Gaussians
 
-_SH_C1_DEGREE = 1
+# Tolerance of R R^T = I for a rotation taken from caller c2w (fp32, maybe parsed
+# from text): loose enough for rounded poses, tight enough to catch any scale.
+_ORTHONORMAL_ATOL = 1e-3
+
+
+def _check_rotation(r: torch.Tensor, what: str) -> None:
+    """Raise unless every r [.., 3, 3] is a proper rotation."""
+    r = r.double()
+    if not torch.isfinite(r).all():
+        raise ValueError(f"{what}: the rotation is not finite")
+    eye = torch.eye(3, dtype=r.dtype, device=r.device)
+    error = (r @ r.transpose(-1, -2) - eye).abs().amax(dim=(-2, -1))
+    if (error > _ORTHONORMAL_ATOL).any():
+        raise ValueError(
+            f"{what}: the rotation is not orthonormal (non-uniform scale or "
+            f"shear; max |R R^T - I| = {error.max().item():.2e})"
+        )
+    if (torch.linalg.det(r) < 0).any():
+        raise ValueError(
+            f"{what}: the rotation has det < 0 (a reflection, e.g. left-handed "
+            "c2w axes)"
+        )
 
 
 @dataclass
@@ -30,6 +53,11 @@ class ModelFrame:
         The dataset's arithmetic, op for op (`camera_normalization` followed by the
         in-place translation scale), so the result is bit-identical to training.
         """
+        if c2w.shape[0] != self.anchor_c2w.shape[0]:
+            raise ValueError(
+                f"{c2w.shape[0]} camera samples for a frame of "
+                f"{self.anchor_c2w.shape[0]}"
+            )
         out = []
         for anchor, poses in zip(self.anchor_c2w, c2w):
             canonical = torch.eye(4, dtype=torch.float32, device=anchor.device)[None]
@@ -41,23 +69,58 @@ class ModelFrame:
         return model
 
     def cameras_to_model(self, cameras: Cameras) -> Cameras:
-        return replace(cameras, c2w=self.c2w_to_model(cameras.c2w))
+        """World-frame cameras -> model frame (fp32, on the frame's device)."""
+        c2w = cameras.c2w.float().to(self.anchor_c2w.device)
+        return replace(cameras, c2w=self.c2w_to_model(c2w))
 
-    def gaussians_to_world(self, gaussians: Gaussians) -> Gaussians:
-        """Model-frame Gaussians -> world frame (fp32)."""
-        g = gaussians.to(dtype=torch.float32)
-        anchor = self.anchor_c2w.to(g.means)
-        rotation, translation = anchor[:, :3, :3], anchor[:, :3, 3]
-        means = (g.means / self.scale) @ rotation.transpose(-1, -2)
-        means = means + translation[:, None]
+    def model_to_world(self) -> Similarity:
+        """model -> world: x_w = anchor_c2w @ (x_m / scale)."""
+        anchor = self.anchor_c2w
+        return Similarity(
+            rotation=anchor[:, :3, :3],
+            scale=torch.full_like(anchor[:, 0, 0], 1.0 / self.scale),
+            translation=anchor[:, :3, 3],
+        )
+
+
+@dataclass
+class Similarity:
+    """x -> scale * rotation @ x + translation, per sample.
+
+    The one transform every model's Gaussians go through between frames (the
+    public entry is `GSOutput.to_world`). Only rotations, uniform scales and
+    translations keep a Gaussian a Gaussian with the same opacity and its colour
+    an SH field, so anything else is rejected.
+    """
+
+    rotation: torch.Tensor  # [B, 3, 3], proper (det +1)
+    scale: torch.Tensor  # [B], > 0
+    translation: torch.Tensor  # [B, 3]
+
+    def __post_init__(self) -> None:
+        _check_rotation(self.rotation, "not a similarity")
+        if not (torch.isfinite(self.scale) & (self.scale > 0)).all():
+            raise ValueError(f"scale must be finite and > 0, got {self.scale}")
+        if not torch.isfinite(self.translation).all():
+            raise ValueError(f"translation must be finite, got {self.translation}")
+
+    def apply(self, gaussians: Gaussians) -> Gaussians:
+        """Each attribute as the transform acts on it: means fully, scales by
+        `scale`, quats by `rotation`, SH of degree >= 1 rotated; opacities and RGB /
+        degree-0 colours unchanged. Computed in the dtype of `gaussians`."""
+        g = gaussians
+        rotation = self.rotation.to(g.means)
+        scale = self.scale.to(g.means)
+        means = (g.means * scale[:, None, None]) @ rotation.transpose(-1, -2)
+        means = means + self.translation.to(g.means)[:, None]
         quats = quat_multiply(matrix_to_quat(rotation)[:, None], g.quats)
         colors = g.colors
-        if g.sh_degree is not None and g.sh_degree >= _SH_C1_DEGREE:
+        if g.sh_degree is not None and g.sh_degree >= 1:
             colors = rotate_sh(colors, rotation, g.sh_degree)
         return replace(
             g,
             means=means,
-            scales=g.scales / self.scale,
+            scales=g.scales * scale[:, None, None],
             quats=quats,
             colors=colors,
         )
@@ -145,17 +208,108 @@ def rotate_sh(
 ) -> torch.Tensor:
     """Rotate SH coefficients [B, N, K, 3] by per-sample rotations [B, 3, 3].
 
-    Degree 1 in the 3DGS / gsplat basis is C1 * (-y c1 + z c2 - x c3), i.e. a linear
-    form a . d with a = (-c3, -c1, c2). Rotating the field by R turns a into R a.
-    Degree 0 is rotation invariant.
+    The rotated field along d is the original along R^T d, in the real SH basis of
+    3DGS / gsplat, any degree. Degree 0 is rotation invariant. Degree 1 is
+    C1 * (-y c1 + z c2 - x c3), a linear form a . d with a = (-c3, -c1, c2), so it
+    turns into R a. Degrees >= 2 use `sh_rotation_blocks`, built in fp64.
     """
-    if degree > 1:
-        raise NotImplementedError(f"SH rotation for degree {degree} is not needed yet")
+    if colors.shape[-2] != (degree + 1) ** 2:
+        raise ValueError(
+            f"degree {degree} needs {(degree + 1) ** 2} SH coefficients, got "
+            f"{tuple(colors.shape)}"
+        )
+    rotated = colors.clone()
+    if degree < 1:
+        return rotated
     c1, c2, c3 = colors[:, :, 1], colors[:, :, 2], colors[:, :, 3]
     a = torch.stack((-c3, -c1, c2), dim=2)  # [B, N, xyz, rgb]
     a = torch.einsum("bij,bnjc->bnic", rotation, a)
-    rotated = colors.clone()
     rotated[:, :, 1] = -a[:, :, 1]
     rotated[:, :, 2] = a[:, :, 2]
     rotated[:, :, 3] = -a[:, :, 0]
+    if degree < 2:
+        return rotated
+    blocks = sh_rotation_blocks(rotation.double(), degree)
+    for degree_l in range(2, degree + 1):
+        band = slice(degree_l**2, (degree_l + 1) ** 2)
+        block = blocks[degree_l].to(colors.dtype)
+        rotated[:, :, band] = torch.einsum("bij,bnjc->bnic", block, colors[:, :, band])
     return rotated
+
+
+def sh_rotation_blocks(rotation: torch.Tensor, degree: int) -> list[torch.Tensor]:
+    """Real SH rotation matrices D_l [.., 2l+1, 2l+1] for l = 0..degree, in the
+    3DGS / gsplat basis: coefficients c_l of degree l become D_l @ c_l.
+
+    Ivanic & Ruedenberg's recursion (J. Phys. Chem. 100, 6342 (1996); errata 102,
+    9099 (1998)), exact for any degree: D_l from D_{l-1} and D_1, which is R in the
+    (y, z, x) order of the real basis without the Condon-Shortley phase. gsplat's
+    basis carries that phase, (-1)^m on order m, so each D_l is conjugated by it.
+    """
+    order = [1, 2, 0]  # m = -1, 0, 1 <-> y, z, x
+    r1 = rotation[..., order, :][..., :, order]
+    blocks = [torch.ones_like(rotation[..., :1, :1]), r1]
+    for degree_l in range(2, degree + 1):
+        blocks.append(_ivanic_ruedenberg_step(r1, blocks[-1], degree_l))
+    out = []
+    for degree_l, block in enumerate(blocks[: degree + 1]):
+        m = torch.arange(-degree_l, degree_l + 1, device=rotation.device)
+        phase = (1 - 2 * (m % 2)).to(rotation.dtype)
+        out.append(block * phase[:, None] * phase[None, :])
+    return out
+
+
+def _ivanic_ruedenberg_step(
+    r1: torch.Tensor, prev: torch.Tensor, degree: int
+) -> torch.Tensor:
+    """D_l [.., 2l+1, 2l+1] from D_1 and D_{l-1}, indexed by order m in -l..l."""
+    lv = degree
+
+    def d1(i: int, j: int) -> torch.Tensor:
+        return r1[..., i + 1, j + 1]
+
+    def d_prev(a: int, b: int) -> torch.Tensor:
+        return prev[..., a + lv - 1, b + lv - 1]
+
+    def p(i: int, a: int, b: int) -> torch.Tensor:
+        if b == lv:
+            return d1(i, 1) * d_prev(a, lv - 1) - d1(i, -1) * d_prev(a, -lv + 1)
+        if b == -lv:
+            return d1(i, 1) * d_prev(a, -lv + 1) + d1(i, -1) * d_prev(a, lv - 1)
+        return d1(i, 0) * d_prev(a, b)
+
+    def u(m: int, n: int) -> torch.Tensor:
+        return p(0, m, n)
+
+    def v(m: int, n: int) -> torch.Tensor:
+        if m == 0:
+            return p(1, 1, n) + p(-1, -1, n)
+        if m > 0:
+            first = p(1, m - 1, n) * math.sqrt(1 + (m == 1))
+            return first if m == 1 else first - p(-1, -m + 1, n)
+        first = p(-1, -m - 1, n) * math.sqrt(1 + (m == -1))
+        return first if m == -1 else first + p(1, m + 1, n)
+
+    def w(m: int, n: int) -> torch.Tensor:
+        if m > 0:
+            return p(1, m + 1, n) + p(-1, -m - 1, n)
+        return p(1, m - 1, n) - p(-1, -m + 1, n)
+
+    rows = []
+    for m in range(-lv, lv + 1):
+        row = []
+        for n in range(-lv, lv + 1):
+            am = abs(m)
+            denom = 2 * lv * (2 * lv - 1) if abs(n) == lv else (lv + n) * (lv - n)
+            cu = math.sqrt((lv + m) * (lv - m) / denom)
+            cv = 0.5 * math.sqrt((1 + (m == 0)) * (lv + am - 1) * (lv + am) / denom)
+            cv = -cv if m == 0 else cv
+            cw = 0.0 if m == 0 else -0.5 * math.sqrt((lv - am - 1) * (lv - am) / denom)
+            entry = cv * v(m, n)
+            if cu:
+                entry = entry + cu * u(m, n)
+            if cw:
+                entry = entry + cw * w(m, n)
+            row.append(entry)
+        rows.append(torch.stack(row, dim=-1))
+    return torch.stack(rows, dim=-2)

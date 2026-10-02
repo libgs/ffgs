@@ -1,4 +1,4 @@
-"""`GSPipeline`: posed images in, world-frame Gaussians out, for any registered model."""
+"""`GSPipeline`: posed images in, Gaussians out, for any registered model."""
 
 from __future__ import annotations
 
@@ -41,21 +41,44 @@ _PIPELINE_FILES = (
 )
 
 
+SPACES = ("model", "world")
+
+
 @dataclass
 class GSOutput:
-    gaussians: Gaussians  # world frame, fp32
+    """Predicted Gaussians and the model frame they were predicted in.
+
+    `gaussians` are in `space`: `"model"`, the model's own frame, as `pipe(views)`
+    returns them (what the model's official code produces); or `"world"`, the frame
+    of the input c2w, after `to_world()`. `frame` is the model frame either way.
+    """
+
+    gaussians: Gaussians
     frame: ModelFrame
-    # The model's own output in its working frame, when asked for.
-    model_gaussians: Gaussians | None = None
+    space: str = "model"
+
+    def __post_init__(self) -> None:
+        if self.space not in SPACES:
+            raise ValueError(f"space must be one of {SPACES}, got {self.space!r}")
+
+    def to_world(self) -> GSOutput:
+        """The same output with fp32 Gaussians in the world frame of the input c2w
+        (unchanged if already there). Rejects input c2w whose rotation is not
+        proper (non-orthonormal or a reflection)."""
+        if self.space == "world":
+            return self
+        gaussians = self.gaussians.to(dtype=torch.float32)
+        gaussians = self.frame.model_to_world().apply(gaussians)
+        return GSOutput(gaussians=gaussians, frame=self.frame, space="world")
 
 
 class GSPipeline:
     """Load with `from_pretrained`, call on `Views`, render at `Cameras`.
 
     >>> pipe = GSPipeline.from_pretrained("path/or/repo-id", device="cuda")
-    >>> out = pipe(Views(images, intrinsics, c2w))
+    >>> out = pipe(Views(images, intrinsics, c2w))  # Gaussians in the model frame
     >>> images = pipe.render(out, Cameras(c2w_new, intrinsics_new, (h, w)))["images"]
-    >>> out.gaussians.save_ply("scene.ply")
+    >>> out.to_world().gaussians.save_ply("scene.ply")  # in the frame of c2w
     """
 
     def __init__(
@@ -215,25 +238,15 @@ class GSPipeline:
         return torch.autocast(device_type="cuda", dtype=dtype)
 
     @torch.no_grad()
-    def __call__(
-        self,
-        views: Views,
-        *,
-        return_model_frame: bool = False,
-        **options: Any,
-    ) -> GSOutput:
-        """Predict Gaussians from `views`. `options` go to the processor
-        (e.g. `scene_scale=`)."""
+    def __call__(self, views: Views, **options: Any) -> GSOutput:
+        """Predict Gaussians from `views`, in the model frame (`out.to_world()` for
+        the frame of `views.c2w`). `options` go to the processor (e.g.
+        `scene_scale=`)."""
         with torch.autocast(device_type=self.device.type, enabled=False):
             prepared = self.processor.preprocess(views, self.device, **options)
         with self.autocast():
             raw = self.model(prepared.model_input)
-        model_gaussians = self.processor.postprocess(raw)
-        return GSOutput(
-            gaussians=prepared.frame.gaussians_to_world(model_gaussians),
-            frame=prepared.frame,
-            model_gaussians=model_gaussians if return_model_frame else None,
-        )
+        return GSOutput(self.processor.postprocess(raw), prepared.frame)
 
     @torch.no_grad()
     def render(
@@ -242,8 +255,14 @@ class GSPipeline:
         cameras: Cameras,
         **kwargs: Any,
     ) -> dict[str, torch.Tensor]:
-        """Render world-frame Gaussians at world-frame `cameras`."""
+        """Render `output` at `cameras`, given in the world frame of the input c2w
+        whichever `space` the Gaussians are in: for model-frame Gaussians the
+        cameras and the processor's near / far planes are taken into the model
+        frame first."""
         near, far = self.processor.render_planes(output.frame)
+        if output.space == "model":
+            cameras = output.frame.cameras_to_model(cameras)
+            near, far = near * output.frame.scale, far * output.frame.scale
         kwargs.setdefault("background", self.processor.background)
         with torch.autocast(device_type=self.device.type, enabled=False):
             return render_mod.render(

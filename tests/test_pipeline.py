@@ -3,8 +3,18 @@ import json
 import pytest
 import torch
 from _dummy import MODEL_TYPE, SPEC, DummyModel, DummyProcessor
+from test_geometry import eval_sh
 
-from ffgs import GSPipeline, ModelSpec, Views, get_model_spec, register_model
+from ffgs import (
+    Cameras,
+    GSOutput,
+    GSPipeline,
+    ModelSpec,
+    Views,
+    get_model_spec,
+    register_model,
+)
+from ffgs.geometry import quat_to_matrix
 from ffgs.registry import spec_for_model
 
 
@@ -41,20 +51,90 @@ def test_pipeline_round_trip_and_forward(tmp_path) -> None:
     assert DummyModel.from_pretrained(tmp_path).num_gaussians == 5
 
     views = _views()
-    out_a = pipe(views, return_model_frame=True)
-    out_b = loaded(views, return_model_frame=True)
-    assert torch.equal(out_a.model_gaussians.means, out_b.model_gaussians.means)
-    assert torch.equal(out_a.gaussians.colors, out_b.gaussians.colors)
-    # The pipeline's model-frame output is the model's own on the prepared input.
+    out_a, out_b = pipe(views), loaded(views)
+    assert out_a.space == "model"
+    assert torch.equal(out_a.gaussians.means, out_b.gaussians.means)
+    # The pipeline's output is the model's own on the prepared input.
     prepared = processor.preprocess(views, torch.device("cpu"))
     with torch.no_grad():
         raw = processor.postprocess(pipe.model(prepared.model_input))
-    assert torch.equal(out_a.model_gaussians.means, raw.means)
-    world = out_a.frame.gaussians_to_world(out_a.model_gaussians)
-    assert torch.equal(out_a.gaussians.means, world.means)
-    assert out_a.gaussians.means.dtype == torch.float32
-    assert pipe(views).model_gaussians is None
+    assert torch.equal(out_a.gaussians.means, raw.means)
+    assert torch.equal(out_a.gaussians.colors, raw.colors)
     assert processor.render_planes(out_a.frame) == (0.025 / 0.2, 125.0 / 0.2)
+
+
+def test_to_world_applies_the_frame() -> None:
+    pipe = GSPipeline(_model(), DummyProcessor(scene_scale=0.2))
+    out = pipe(_views())
+    world = out.to_world()
+    assert (world.space, world.frame) == ("world", out.frame)
+    want = out.frame.model_to_world().apply(out.gaussians)
+    assert torch.equal(world.gaussians.means, want.means)
+    assert torch.equal(world.gaussians.colors, want.colors)
+    assert world.gaussians.means.dtype == torch.float32
+    assert world.to_world() is world
+    with pytest.raises(ValueError, match="space"):
+        GSOutput(out.gaussians, out.frame, space="camera")
+
+
+def _fake_render(gaussians, cameras, *, near, far, background=None, **kwargs):
+    """What a rasteriser sees of each Gaussian in each view: pixel, depth over
+    near / far, camera-space covariance over depth^2, view-dependent colour."""
+    c2w = cameras.c2w.double()
+    viewmats = torch.inverse(c2w)
+    means = gaussians.means.double()
+    cam = torch.einsum("bvij,bnj->bvni", viewmats[..., :3, :3], means)
+    cam = cam + viewmats[:, :, None, :3, 3]
+    depth = cam[..., 2:]
+    pixels = torch.einsum("bvij,bvnj->bvni", cameras.pixel_k.double(), cam / depth)
+    r = quat_to_matrix(gaussians.quats.double())
+    cov = r @ torch.diag_embed(gaussians.scales.double() ** 2) @ r.transpose(-1, -2)
+    w2c = viewmats[..., None, :3, :3]
+    cov = w2c @ cov[:, None] @ w2c.transpose(-1, -2) / depth[..., None] ** 2
+    dirs = torch.nn.functional.normalize(
+        means[:, None] - c2w[:, :, None, :3, 3], dim=-1
+    )
+    colors = eval_sh(gaussians.colors.double()[:, None], dirs)
+    return {
+        "pixels": pixels[..., :2],
+        "near": depth / near,
+        "far": depth / far,
+        "cov": cov,
+        "colors": colors,
+    }
+
+
+def test_render_is_the_same_in_either_space(monkeypatch) -> None:
+    torch.manual_seed(1)
+    model = DummyModel(num_gaussians=20, sh_degree=3)
+    pipe = GSPipeline(model, DummyProcessor(scene_scale=0.2))
+    out = pipe(_views())
+    out.gaussians.means[..., 2] += 2.0  # in front of the cameras
+    monkeypatch.setattr("ffgs.pipeline.render_mod.render", _fake_render)
+    g = torch.Generator().manual_seed(2)
+    c2w = torch.eye(4).repeat(1, 2, 1, 1)
+    c2w[..., :3, 3] = torch.randn(1, 2, 3, generator=g) * 0.1
+    cameras = Cameras(c2w, torch.eye(3).repeat(1, 2, 1, 1), (8, 8), True)
+    in_model = pipe.render(out, cameras)
+    in_world = pipe.render(out.to_world(), cameras)
+    for key, value in in_model.items():
+        torch.testing.assert_close(value, in_world[key], atol=1e-4, rtol=1e-4)
+
+
+@pytest.mark.gpu
+def test_gsplat_render_is_the_same_in_either_space() -> None:
+    torch.manual_seed(1)
+    pipe = GSPipeline(DummyModel(num_gaussians=200, sh_degree=3), DummyProcessor())
+    pipe.to("cuda")
+    views = _views()
+    out = pipe(views)
+    out.gaussians.means[..., 2] = out.gaussians.means[..., 2].abs() + 1.0
+    out.gaussians.scales.clamp_(max=0.3)
+    cameras = Cameras(views.c2w, views.intrinsics, views.image_shape, True)
+    in_model = pipe.render(out, cameras)["images"]
+    in_world = pipe.render(out.to_world(), cameras)["images"]
+    assert (in_model - 0.5).abs().max() > 0.01  # something was drawn
+    torch.testing.assert_close(in_model, in_world, atol=1e-3, rtol=0)
 
 
 def test_processor_overrides_take_a_resize_callable(tmp_path) -> None:

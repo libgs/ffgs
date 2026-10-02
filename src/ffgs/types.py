@@ -8,7 +8,8 @@ Conventions, the same for every model:
 - intrinsics: pixel-unit K [.., 3, 3] for the image size given, or the normalised K
   (fx / W, cx / W, fy / H, cy / H) with `normalized_intrinsics=True`; zero skew
   (the renderers have no skew term, so a nonzero K[0, 1] is rejected);
-- `Gaussians` come back in the world frame of the c2w they were predicted from.
+- `Gaussians` come back in the model's frame; `GSOutput.to_world()` takes them
+  to the world frame of the c2w they were predicted from.
 
 Unbatched inputs get a leading batch dimension of 1; outputs stay batched.
 """
