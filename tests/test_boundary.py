@@ -18,6 +18,19 @@ def test_import_does_not_pull_in_gsplat_training_stacks_or_repo_code() -> None:
     assert result.returncode == 0, result.stdout + result.stderr
 
 
+def test_builtin_models_load_only_when_used() -> None:
+    code = (
+        "import sys; import ffgs; from ffgs import zoo; "
+        "[zoo.get_entry(n) for n in zoo.list_models()]; "
+        "bad = sorted(m for m in sys.modules if m.startswith('ffgs.models.')); "
+        "print(bad); sys.exit(1 if bad else 0)"
+    )
+    result = subprocess.run(
+        [sys.executable, "-c", code], capture_output=True, text=True
+    )
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
 def test_version_is_the_installed_package_version() -> None:
     from importlib.metadata import version
 

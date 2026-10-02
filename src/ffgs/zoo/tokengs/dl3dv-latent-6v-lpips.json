@@ -1,0 +1,48 @@
+{
+  "model_type": "tokengs",
+  "description": "TokenGS 2026.6 latent-bottleneck model (12-layer multiscale encoder, 4096 scene latents), DL3DV, 6 input views at 256x448, L2 + 0.5 LPIPS loss (eval preset eval_dl3dv_latent_6view_lpips)",
+  "weights": {
+    "repo": "jiaweir/tokengs",
+    "file": "checkpoints_26.06/dl3dv_latent_6v_lpips.safetensors",
+    "revision": "a7eb20340b99abd29b554c29c339446aebccff36",
+    "sha256": "1c48ed3a00acedd8d9d3e3341d18bcd413a68b7d2b5507a7c4442a9136952fb8"
+  },
+  "model": {
+    "enc_depth": 12,
+    "dec_depth": 1,
+    "dec_patch_size": 8,
+    "clip_head_readout_std": 0.002,
+    "clip_head_z_init": 0.1,
+    "dec_init_values": 0.01,
+    "gaussian_z_offset": 0.0,
+    "opacity_bias": 2.0,
+    "gs_token_std": 0.02,
+    "use_multiscale_encoder": true,
+    "multiscale_encoder_layers": [
+      5,
+      7,
+      9,
+      11
+    ],
+    "use_latent_bottleneck": true,
+    "num_latents": 4096,
+    "latent_cross_attn_depth": 12,
+    "num_gs_tokens": 4096
+  },
+  "processor": {
+    "image_shape": [
+      256,
+      448
+    ],
+    "resize_mode": "bilinear",
+    "crop_mode": "crop",
+    "camera_normalization": "mean_cam",
+    "scene_scale": 0.15,
+    "num_input_views": 6
+  },
+  "source": {
+    "url": "https://github.com/nv-tlabs/TokenGS",
+    "paper": "https://arxiv.org/abs/2604.15239"
+  },
+  "license": "NVIDIA Internal Scientific Research and Development Model License"
+}

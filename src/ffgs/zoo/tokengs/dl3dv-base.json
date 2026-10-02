@@ -1,0 +1,29 @@
+{
+  "model_type": "tokengs",
+  "description": "TokenGS DL3DV base model: 1024 Gaussian tokens, trained on 4 input views at 256x256 (the checkpoint the 2/4/6-view models are finetuned from)",
+  "weights": {
+    "repo": "jiaweir/tokengs",
+    "file": "checkpoints/dl3dv_base.safetensors",
+    "revision": "a7eb20340b99abd29b554c29c339446aebccff36",
+    "sha256": "ac6cb611e3b19ea4aaaeae32c952cf7555f68ef3e70b03199f24c0860245bba8"
+  },
+  "model": {
+    "num_gs_tokens": 1024
+  },
+  "processor": {
+    "image_shape": [
+      256,
+      256
+    ],
+    "resize_mode": "bilinear",
+    "crop_mode": "crop",
+    "camera_normalization": "first_cam",
+    "scene_scale": 0.15,
+    "num_input_views": 4
+  },
+  "source": {
+    "url": "https://github.com/nv-tlabs/TokenGS",
+    "paper": "https://arxiv.org/abs/2604.15239"
+  },
+  "license": "NVIDIA Internal Scientific Research and Development Model License"
+}

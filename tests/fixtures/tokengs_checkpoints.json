@@ -1,0 +1,4503 @@
+{
+ "dtype": "F32",
+ "files": {
+  "checkpoints/dl3dv_2v.safetensors": "finetuned",
+  "checkpoints/dl3dv_4v.safetensors": "finetuned",
+  "checkpoints/dl3dv_6v.safetensors": "finetuned",
+  "checkpoints/dl3dv_base.safetensors": "base",
+  "checkpoints_26.06/dl3dv_latent_2v_lpips.safetensors": "latent",
+  "checkpoints_26.06/dl3dv_latent_2v_ssim.safetensors": "latent",
+  "checkpoints_26.06/dl3dv_latent_4v_lpips.safetensors": "latent",
+  "checkpoints_26.06/dl3dv_latent_4v_ssim.safetensors": "latent",
+  "checkpoints_26.06/dl3dv_latent_6v_lpips.safetensors": "latent",
+  "checkpoints_26.06/dl3dv_latent_6v_ssim.safetensors": "latent"
+ },
+ "layouts": {
+  "finetuned": {
+   "activation_head.deconv.bias": [
+    896
+   ],
+   "activation_head.deconv.weight": [
+    896,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.0.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.0.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.1.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.1.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.2.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.2.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.k_proj_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.k_proj_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.kv_proj.bias": [
+    2048
+   ],
+   "enc_dec_backbone.kv_proj.weight": [
+    2048,
+    1024
+   ],
+   "gs_tokens": [
+    4096,
+    1024
+   ],
+   "patch_embed.norm.bias": [
+    1024
+   ],
+   "patch_embed.norm.weight": [
+    1024
+   ],
+   "patch_embed.proj.bias": [
+    1024
+   ],
+   "patch_embed.proj.weight": [
+    1024,
+    3,
+    8,
+    8
+   ],
+   "patch_plucker_embed.norm.bias": [
+    1024
+   ],
+   "patch_plucker_embed.norm.weight": [
+    1024
+   ],
+   "patch_plucker_embed.proj.bias": [
+    1024
+   ],
+   "patch_plucker_embed.proj.weight": [
+    1024,
+    6,
+    8,
+    8
+   ]
+  },
+  "base": {
+   "activation_head.deconv.bias": [
+    896
+   ],
+   "activation_head.deconv.weight": [
+    896,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.1.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.10.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.11.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.2.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.3.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.4.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.5.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.6.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.7.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.8.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.9.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.0.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.0.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.1.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.1.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.2.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.2.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.k_proj_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.k_proj_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.kv_proj.bias": [
+    2048
+   ],
+   "enc_dec_backbone.kv_proj.weight": [
+    2048,
+    1024
+   ],
+   "gs_tokens": [
+    1024,
+    1024
+   ],
+   "patch_embed.norm.bias": [
+    1024
+   ],
+   "patch_embed.norm.weight": [
+    1024
+   ],
+   "patch_embed.proj.bias": [
+    1024
+   ],
+   "patch_embed.proj.weight": [
+    1024,
+    3,
+    8,
+    8
+   ],
+   "patch_plucker_embed.norm.bias": [
+    1024
+   ],
+   "patch_plucker_embed.norm.weight": [
+    1024
+   ],
+   "patch_plucker_embed.proj.bias": [
+    1024
+   ],
+   "patch_plucker_embed.proj.weight": [
+    1024,
+    6,
+    8,
+    8
+   ]
+  },
+  "latent": {
+   "activation_head.deconv.bias": [
+    896
+   ],
+   "activation_head.deconv.weight": [
+    896,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.decoder_blocks.0.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.0.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.0.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.0.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.0.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.1.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.1.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.1.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.1.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.10.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.10.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.10.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.10.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.10.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.10.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.10.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.10.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.11.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.11.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.11.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.11.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.11.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.11.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.11.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.11.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.2.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.2.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.2.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.2.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.3.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.3.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.3.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.3.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.3.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.3.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.3.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.3.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.4.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.4.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.4.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.4.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.4.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.4.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.4.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.4.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.5.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.5.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.5.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.5.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.5.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.5.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.5.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.5.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.6.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.6.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.6.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.6.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.6.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.6.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.6.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.6.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.7.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.7.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.7.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.7.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.7.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.7.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.7.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.7.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.8.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.8.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.8.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.8.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.8.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.8.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.8.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.8.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.9.attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.9.attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.encoder.9.attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.encoder.9.attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.encoder.9.attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.ls1.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.ls2.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.encoder.9.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.encoder.9.norm1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.norm1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.norm2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.encoder.9.norm2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.k_proj_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.k_proj_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.0.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.0.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.0.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.1.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.1.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.1.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.10.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.10.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.10.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.11.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.11.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.11.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.2.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.2.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.2.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.3.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.3.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.3.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.4.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.4.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.4.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.5.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.5.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.5.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.6.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.6.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.6.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.7.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.7.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.7.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.8.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.8.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.8.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn.gs_token_norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn.gs_token_norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn.out_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn.out_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn.q_proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn.q_proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_cross_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.gs_self_attn.k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.gs_self_attn.k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.gs_self_attn.proj.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.gs_self_attn.proj.weight": [
+    1024,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.gs_self_attn.q_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.gs_self_attn.q_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.gs_self_attn.qkv.bias": [
+    3072
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.gs_self_attn.qkv.weight": [
+    3072,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.gs_self_attn_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.mlp.mlp.fc1.bias": [
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.9.mlp.mlp.fc1.weight": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.mlp.mlp.fc2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.mlp.mlp.fc2.weight": [
+    1024,
+    4096
+   ],
+   "enc_dec_backbone.latent_blocks.9.mlp.norm.bias": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.mlp.norm.weight": [
+    1024
+   ],
+   "enc_dec_backbone.latent_blocks.9.mlp_scale.gamma": [
+    1024
+   ],
+   "enc_dec_backbone.latent_feature_k_norm.bias": [
+    64
+   ],
+   "enc_dec_backbone.latent_feature_k_norm.weight": [
+    64
+   ],
+   "enc_dec_backbone.latent_feature_kv_proj.bias": [
+    2048
+   ],
+   "enc_dec_backbone.latent_feature_kv_proj.weight": [
+    2048,
+    4096
+   ],
+   "enc_dec_backbone.latent_kv_proj.bias": [
+    2048
+   ],
+   "enc_dec_backbone.latent_kv_proj.weight": [
+    2048,
+    1024
+   ],
+   "enc_dec_backbone.latents": [
+    4096,
+    1024
+   ],
+   "enc_dec_backbone.multiscale_norms.0.bias": [
+    1024
+   ],
+   "enc_dec_backbone.multiscale_norms.0.weight": [
+    1024
+   ],
+   "enc_dec_backbone.multiscale_norms.1.bias": [
+    1024
+   ],
+   "enc_dec_backbone.multiscale_norms.1.weight": [
+    1024
+   ],
+   "enc_dec_backbone.multiscale_norms.2.bias": [
+    1024
+   ],
+   "enc_dec_backbone.multiscale_norms.2.weight": [
+    1024
+   ],
+   "enc_dec_backbone.multiscale_norms.3.bias": [
+    1024
+   ],
+   "enc_dec_backbone.multiscale_norms.3.weight": [
+    1024
+   ],
+   "gs_tokens": [
+    4096,
+    1024
+   ],
+   "patch_embed.norm.bias": [
+    1024
+   ],
+   "patch_embed.norm.weight": [
+    1024
+   ],
+   "patch_embed.proj.bias": [
+    1024
+   ],
+   "patch_embed.proj.weight": [
+    1024,
+    3,
+    8,
+    8
+   ],
+   "patch_plucker_embed.norm.bias": [
+    1024
+   ],
+   "patch_plucker_embed.norm.weight": [
+    1024
+   ],
+   "patch_plucker_embed.proj.bias": [
+    1024
+   ],
+   "patch_plucker_embed.proj.weight": [
+    1024,
+    6,
+    8,
+    8
+   ]
+  }
+ },
+ "repo": "jiaweir/tokengs",
+ "revision": "a7eb20340b99abd29b554c29c339446aebccff36"
+}

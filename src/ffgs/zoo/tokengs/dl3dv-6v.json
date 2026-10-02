@@ -1,0 +1,29 @@
+{
+  "model_type": "tokengs",
+  "description": "TokenGS DL3DV, finetuned for 6 input views at 256x448 with 4096 Gaussian tokens (eval preset eval_dl3dv_6view)",
+  "weights": {
+    "repo": "jiaweir/tokengs",
+    "file": "checkpoints/dl3dv_6v.safetensors",
+    "revision": "a7eb20340b99abd29b554c29c339446aebccff36",
+    "sha256": "27036790f2288766b48af3cdae789ce01d3ea2eb199569af3aa64018ca8e885c"
+  },
+  "model": {
+    "num_gs_tokens": 4096
+  },
+  "processor": {
+    "image_shape": [
+      256,
+      448
+    ],
+    "resize_mode": "bilinear",
+    "crop_mode": "crop",
+    "camera_normalization": "first_cam",
+    "scene_scale": 0.15,
+    "num_input_views": 6
+  },
+  "source": {
+    "url": "https://github.com/nv-tlabs/TokenGS",
+    "paper": "https://arxiv.org/abs/2604.15239"
+  },
+  "license": "NVIDIA Internal Scientific Research and Development Model License"
+}
