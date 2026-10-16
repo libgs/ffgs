@@ -33,6 +33,7 @@ SPEC = register_model(
         model_cls=AnySplat,
         processor_cls=AnySplatProcessor,
         convert_state_dict=convert_state_dict,
+        display_name="AnySplat",
     )
 )
 

@@ -30,6 +30,7 @@ SPEC = register_model(
         model_cls=TokenGS,
         processor_cls=TokenGSProcessor,
         convert_state_dict=convert_state_dict,
+        display_name="TokenGS",
     )
 )
 

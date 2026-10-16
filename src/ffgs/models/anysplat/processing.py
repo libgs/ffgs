@@ -77,6 +77,7 @@ class AnySplatProcessorConfig(ImageFitConfig):
 
 class AnySplatProcessor(Processor):
     config_cls = AnySplatProcessorConfig
+    camera_input = "none"
 
     def preprocess(self, views: Views, device: torch.device) -> Prepared:
         images = self.fit_views(views).images

@@ -32,14 +32,18 @@ from .image import (
 from .types import Cameras, Gaussians, Views
 
 PROCESSOR_CONFIG_NAME = "processor_config.json"
+# Whether a model is conditioned on the input cameras (`Processor.camera_input`):
+# "required", always; "optional", when given; "none", never.
+CAMERA_INPUTS = ("required", "optional", "none")
 
 
 @dataclass
 class Prepared:
     """A processor's output for one call: what the model eats, and the frame.
 
-    `frame` is None for models that predict their cameras: it is then fitted
-    after the model, from the predicted cameras (see `Processor.output_frame`).
+    `frame` is None when it is not known before the model: without input poses,
+    or when it is fitted after the model to the cameras it predicts (see
+    `Processor.output_frame`).
     """
 
     model_input: Any
@@ -73,6 +77,15 @@ class ImageFitConfig:
 
 class Processor:
     config_cls: ClassVar[type]
+    camera_input: ClassVar[str] = "required"  # one of CAMERA_INPUTS
+
+    def __init_subclass__(cls, **kwargs: Any) -> None:
+        super().__init_subclass__(**kwargs)
+        if cls.camera_input not in CAMERA_INPUTS:
+            raise TypeError(
+                f"{cls.__name__}.camera_input must be one of {CAMERA_INPUTS}, "
+                f"got {cls.camera_input!r}"
+            )
 
     def __init__(
         self,
@@ -184,15 +197,15 @@ class Processor:
 
     def predicted_cameras(self, model_output: Any) -> Cameras | None:
         """The input cameras a model predicts, in its frame (normalised K for the
-        model's input images); None for models that take cameras as input."""
+        model's input images); None for models that predict none."""
         return None
 
     def output_frame(
         self, views: Views, prepared: Prepared, cameras: Cameras | None
     ) -> ModelFrame | None:
-        """The model frame of this call. Posed models fix it in `preprocess`;
-        for models that predict cameras it is fitted to the given poses over all
-        views (`ModelFrame.fit`), and None when there are none."""
+        """The model frame of this call: fixed in `preprocess` from the given
+        poses, or, for models that predict cameras, fitted to them over all views
+        (`ModelFrame.fit`); None without poses."""
         if prepared.frame is not None:
             return prepared.frame
         if cameras is None or views.c2w is None:

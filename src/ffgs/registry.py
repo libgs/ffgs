@@ -41,6 +41,8 @@ class ModelSpec:
     # Upstream checkpoint (as loaded from a zoo entry's weights file) -> state dict
     # of `model_cls`. Not applied to directories written by `save_pretrained`.
     convert_state_dict: Callable[[Any], dict[str, Any]] | None = None
+    # The model's name for people (e.g. "TokenGS"); None: its model_type.
+    display_name: str | None = None
 
 
 _REGISTRY: dict[str, ModelSpec] = {}

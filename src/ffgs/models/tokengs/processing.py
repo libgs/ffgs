@@ -66,6 +66,11 @@ class TokenGSProcessorConfig(ImageFitConfig):
     # input camera (the 2026.6 latent-bottleneck models).
     camera_normalization: str = "first_cam"
     scene_scale: float = 0.15
+    # Mean distance of the input cameras to the first one in the training data
+    # (DL3DV: the median over 196 scenes, 4-10 views across 55 frames; 10th-90th
+    # percentile 1.3-5.7), for callers to bring poses of arbitrary scale (COLMAP,
+    # a pose estimator) to. Not applied here. None: unknown.
+    camera_spread: float | None = 3.0
     # The input view count the checkpoint was trained for. Other counts run (the
     # number of Gaussians does not depend on it) but warn. None: any.
     num_input_views: int | None = None

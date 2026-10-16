@@ -132,6 +132,7 @@ class PoseFreeDummyProcessorConfig(ImageFitConfig):
 
 class PoseFreeDummyProcessor(Processor):
     config_cls = PoseFreeDummyProcessorConfig
+    camera_input = "none"
 
     def preprocess(self, views: Views, device: torch.device) -> Prepared:
         fitted = self.fit_views(views)
@@ -153,6 +154,20 @@ class PoseFreeDummyProcessor(Processor):
         if frame is None:
             return self.config.znear, self.config.zfar
         return self.config.znear / frame.scale, self.config.zfar / frame.scale
+
+
+class CameraFreeDummyProcessor(PoseFreeDummyProcessor):
+    """Images only in, Gaussians only out (the model's cameras are dropped): its
+    frame is the first input camera's, at scale 1, when the views have poses."""
+
+    def preprocess(self, views: Views, device: torch.device) -> Prepared:
+        prepared = super().preprocess(views, device)
+        if views.c2w is not None:
+            prepared.frame = anchored_frame(views.c2w, 1.0)
+        return prepared
+
+    def predicted_cameras(self, model_output: dict[str, torch.Tensor]) -> None:
+        return None
 
 
 POSE_FREE_SPEC = register_model(

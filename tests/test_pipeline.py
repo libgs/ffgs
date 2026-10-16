@@ -200,6 +200,23 @@ def test_registry() -> None:
         spec_for_model(torch.nn.Linear(1, 1))
 
 
+def test_builtin_model_metadata() -> None:
+    """What a caller (the demo) reads without loading weights: how each model
+    takes cameras, the spread to scale its input poses to, and its name."""
+    tokengs, anysplat = get_model_spec("tokengs"), get_model_spec("anysplat")
+    assert tokengs.display_name == "TokenGS" and anysplat.display_name == "AnySplat"
+    assert tokengs.processor_cls.camera_input == "required"
+    assert anysplat.processor_cls.camera_input == "none"
+    assert tokengs.processor_cls().config.camera_spread == 3.0
+    assert not hasattr(anysplat.processor_cls().config, "camera_spread")
+    assert DummyProcessor.camera_input == "required"  # the default
+    assert SPEC.display_name is None
+    with pytest.raises(TypeError, match="camera_input must be one of"):
+
+        class Unknown(DummyProcessor):
+            camera_input = "sometimes"
+
+
 def test_device_of_a_model_without_parameters() -> None:
     cpu = GSPipeline(torch.nn.Identity(), DummyProcessor(), model_type="identity")
     assert cpu.device == torch.device("cpu")

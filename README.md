@@ -198,16 +198,22 @@ pipe = GSPipeline.from_pretrained("owner/family-repo", subfolder="variant",
 ## Adding a model
 
 A model is a model class with `PyTorchModelHubMixin`, a `Processor` subclass
-(`preprocess`, returning the model input and its `ModelFrame`, or `None` when the
-model predicts its own cameras; `postprocess`, to model-frame `Gaussians`;
+(`preprocess`, returning the model input and its `ModelFrame`, or `None` without
+input poses or when the model predicts its own cameras; `postprocess`, to model-frame `Gaussians`;
 `render_planes`, near / far in world units, or in model units when the frame is
 `None`; for models that predict cameras, `predicted_cameras`, from the model output
 to model-frame `Cameras`, and `output_frame`, whose default fits the frame to the
 given c2w as above; optionally `background` and `render_settings`, the model's
 rasteriser settings such as `radius_clip`, `rasterize_mode` or `clamp`, which
-`pipe.render` uses unless the caller passes them) and a
-`ModelSpec(model_type, model_cls, processor_cls)`. `from_pretrained` resolves the
-`model_type` in `config.json` in this order:
+`pipe.render` uses unless the caller passes them; `camera_input`, whether the
+model is conditioned on the input cameras: `"required"` (the default, always),
+`"optional"` (when given) or `"none"` (never);
+for models trained on poses of a fixed scale, a `camera_spread` in the config, the
+mean distance of the input cameras to the first one in the training data) and a
+`ModelSpec(model_type, model_cls, processor_cls, display_name=...)`. Applications
+read `camera_input`, `camera_spread` and `display_name` to handle a new
+model without changes. `from_pretrained` resolves the `model_type` in
+`config.json` in this order:
 
 1. **In your code** — `ffgs.register_model(spec)` before loading (built-in models
    are registered the same way, on first use).

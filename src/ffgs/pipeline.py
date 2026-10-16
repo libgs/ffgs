@@ -52,8 +52,8 @@ class GSOutput:
     `gaussians` (and `cameras`) are in `space`: `"model"`, the model's own frame,
     as `pipe(views)` returns them (what the model's official code produces); or
     `"world"`, the frame of the input c2w, after `to_world()`. `frame` is the
-    model frame either way; it is None when the model predicts its cameras and the
-    views had no poses, and then there is no world frame to go to.
+    model frame either way; it is None when the views had no poses, and then
+    there is no world frame to go to.
     """
 
     gaussians: Gaussians
@@ -72,15 +72,14 @@ class GSOutput:
         """The same output with fp32 Gaussians (and cameras) in the world frame of
         the input c2w (unchanged if already there). Rejects input c2w whose rotation
         is not proper (non-orthonormal or a reflection), and outputs without a
-        frame (a model that predicts its cameras, run without poses)."""
+        frame (run without poses)."""
         if self.space == "world":
             return self
         if self.frame is None:
             raise ValueError(
-                "this output has no world frame: the model predicts its own "
-                "cameras and the views had no poses (c2w). Its Gaussians and "
-                "`cameras` are in the model's frame; give Views c2w to place them "
-                "in yours"
+                "this output has no world frame: the views had no poses (c2w). "
+                "Its Gaussians (and predicted `cameras`) are in the model's "
+                "frame; give Views c2w to place them in yours"
             )
         to_world = self.frame.model_to_world()
         gaussians = to_world.apply(self.gaussians.to(dtype=torch.float32))
@@ -258,8 +257,9 @@ class GSPipeline:
     @torch.no_grad()
     def __call__(self, views: Views, **options: Any) -> GSOutput:
         """Predict Gaussians from `views`, in the model frame (`out.to_world()` for
-        the frame of `views.c2w`). Models that predict cameras run without c2w,
-        and with c2w fit their frame to them (`out.frame.residuals`). `options`
+        the frame of `views.c2w`). Models not conditioned on cameras run without
+        c2w; those that predict cameras fit their frame to given c2w
+        (`out.frame.residuals`). `options`
         go to the processor (e.g. `scene_scale=`)."""
         with torch.autocast(device_type=self.device.type, enabled=False):
             prepared = self.processor.preprocess(views, self.device, **options)
