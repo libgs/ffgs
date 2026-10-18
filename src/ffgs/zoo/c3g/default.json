@@ -1,0 +1,21 @@
+{
+  "model_type": "c3g",
+  "description": "C3G multiview, 2048 Gaussians from unposed images at 224x224; no camera prediction",
+  "weights": {
+    "repo": "honggyuAn/C3G",
+    "file": "gaussian_decoder_multiview.ckpt",
+    "revision": "875e46ea830032d497ceed5aba169945afe6f8b1",
+    "sha256": "57f2f49e55b09befbe0a745b2ece3d9bd296428f605114e0db6d89cdbfc8b935"
+  },
+  "model": {},
+  "processor": {
+    "image_shape": [224, 224],
+    "resize_mode": "lanczos",
+    "crop_mode": "crop"
+  },
+  "source": {
+    "url": "https://github.com/cvlab-kaist/C3G",
+    "paper": "https://arxiv.org/abs/2512.04021"
+  },
+  "license": "Non-commercial. C3G weights: license not declared by honggyuAn/C3G; VGGT-1B-derived (facebook/VGGT-1B: CC-BY-NC-4.0). Code: C3G MIT, DINOv2 Apache-2.0, Meta VGGT root-license pointers with unresolved historical provenance; see ffgs/models/c3g/LICENSE. No weight redistribution grant asserted."
+}

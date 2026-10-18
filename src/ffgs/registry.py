@@ -29,6 +29,7 @@ ENTRY_POINT_GROUP = "ffgs.models"
 # model_type -> module that calls `register_model` for it on import.
 _BUILTIN: dict[str, str] = {
     "anysplat": "ffgs.models.anysplat",
+    "c3g": "ffgs.models.c3g",
     "tokengs": "ffgs.models.tokengs",
 }
 

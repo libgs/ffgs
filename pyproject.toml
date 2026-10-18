@@ -3,10 +3,13 @@ name = "ffgs"
 version = "0.1.0.dev0"
 description = "Standard inference for feed-forward 3D Gaussian Splatting models"
 readme = "README.md"
-# The AnySplat model (src/ffgs/models/anysplat/) includes non-commercial code: see
-# its LICENSE.
+# AnySplat and C3G include non-commercial components: see each model's LICENSE.
 license = "Apache-2.0 AND MIT AND CC-BY-NC-4.0 AND CC-BY-NC-SA-4.0"
-license-files = ["LICENSE", "src/ffgs/models/anysplat/LICENSE"]
+license-files = [
+    "LICENSE",
+    "src/ffgs/models/anysplat/LICENSE",
+    "src/ffgs/models/c3g/LICENSE",
+]
 authors = [{ name = "libgs contributors" }]
 requires-python = ">=3.10"
 classifiers = [
@@ -14,6 +17,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
+    "einops>=0.8.2",
     "huggingface_hub>=0.23",
     "numpy",
     "pillow",

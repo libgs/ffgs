@@ -40,12 +40,13 @@ python examples/infer_nerfstudio_scene.py <scene> --model <family>/<variant> \
     --images-dir <scene>/images_4 --out out
 ```
 
-Models that predict their own cameras also run on images alone. There is no world
-frame then: the Gaussians and the predicted input cameras are both in the model's
-frame, and renders take cameras in that frame (see [Conventions](#conventions)):
+Models that do not need poses (`camera_input` "optional" or "none") also run on
+images alone. There is no world frame then: the Gaussians, and the input cameras
+for models that predict them, are in the model's frame, and renders take cameras
+in that frame (see [Conventions](#conventions)):
 
 ```python
-pipe = GSPipeline.from_pretrained("<family>/<variant>", device="cuda")  # a pose-free model
+pipe = GSPipeline.from_pretrained("<family>/<variant>", device="cuda")  # e.g. anysplat/default
 out = pipe(Views(images))                    # no intrinsics, no c2w: out.frame is None
 out.gaussians.save_ply("scene.ply")          # in the model's frame
 renders = pipe.render(out, out.cameras)["images"]  # the inputs, at the predicted cameras
@@ -74,7 +75,7 @@ Check the license of a model before use: some are for non-commercial use only.
 | | |
 |---|---|
 | images | float in [0, 1] (uint8 accepted), `[V, 3, H, W]` or `[B, V, 3, H, W]`, any resolution |
-| c2w | camera-to-world, OpenCV axes (x right, y down, z forward); optional for models that predict their own cameras |
+| c2w | camera-to-world, OpenCV axes (x right, y down, z forward); optional unless the model requires them (`camera_input="required"`) |
 | intrinsics | pixel K for the image size given, or normalised K with `normalized_intrinsics=True`; optional like c2w |
 | output | `GSOutput`: `Gaussians` (means, scales, wxyz quats, opacities, SH or RGB colours) in the model's frame, that frame (or `None`), and the input cameras the model predicted (or `None`) |
 
@@ -298,6 +299,8 @@ non-commercial use only.** Its license expression is
 - vendored model code under `src/ffgs/models/<family>/` keeps its upstream license.
   `src/ffgs/models/anysplat/` mixes MIT, Apache-2.0 and non-commercial
   (CC-BY-NC-4.0, CC-BY-NC-SA-4.0) files; its `LICENSE` lists the license per file;
+  `src/ffgs/models/c3g/` mixes MIT, Apache-2.0 and VGGT files kept with the
+  CC-BY-NC-4.0 text; its `LICENSE` describes which is which;
 - model weights are not part of the package and carry their own licenses.
 
 The code and weight licenses of each model are listed in
