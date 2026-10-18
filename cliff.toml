@@ -6,18 +6,16 @@
 [changelog]
 header = ""
 body = """
-{% for group, commits in commits | group_by(attribute="group") %}
+{% for group, commits in commits | group_by(attribute="group") -%}
 ### {{ group | striptags | trim }}
-{% for commit in commits %}
-- **{% if commit.scope %}{{ commit.scope }}: {% endif %}{{ commit.message | upper_first }}**\
-{% if commit.body %}{% for line in commit.body | trim | split(pat="\n") %}
-  {{ line | trim }}\
-{% endfor %}{% endif %}
+
+{% for commit in commits -%}
+- {% if commit.scope %}{{ commit.scope }}: {% endif %}{{ commit.message | upper_first }}
 {% endfor %}
-{% endfor %}
-{% if previous.version and version %}
+{% endfor -%}
+{% if previous.version and version -%}
 **Full changelog**: https://github.com/libgs/ffgs/compare/{{ previous.version }}...{{ version }}
-{% endif %}
+{% endif -%}
 """
 footer = ""
 trim = false
