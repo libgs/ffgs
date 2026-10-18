@@ -1,8 +1,9 @@
 name: Release
 
 # Pushing a tag vX.Y.Z... publishes that commit: CI, then the build, then TestPyPI,
-# then PyPI. Both indexes use trusted publishing (no tokens); each publish job runs
-# in a GitHub environment of the same name, where a required reviewer can hold it.
+# then PyPI, then the GitHub release. Both indexes use trusted publishing (no
+# tokens); each publish job runs in a GitHub environment of the same name, where a
+# required reviewer can hold it.
 on:
   push:
     tags: ["v*"]
@@ -74,3 +75,29 @@ jobs:
           name: dist
           path: dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
+
+  # Notes from the conventional commits since the previous tag (cliff.toml), with
+  # the wheel and sdist attached; dev/alpha/beta/rc versions are marked pre-release.
+  github-release:
+    needs: pypi
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+      - run: uvx git-cliff --latest --output notes.md
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prerelease=
+          case "${GITHUB_REF_NAME#v}" in *[a-z]*) prerelease=--prerelease ;; esac
+          gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" \
+            --notes-file notes.md --verify-tag $prerelease

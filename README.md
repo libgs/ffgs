@@ -288,6 +288,13 @@ torch first (see `.github/workflows/ci.yml`). `tests/fixtures/reference.safetens
 holds frozen reference outputs of the default data path; change it only together
 with a deliberate change to that path.
 
+To release, set `version` in `pyproject.toml` (then `uv lock`), commit it as
+`chore: release X.Y.Z`, merge it into main and push the tag `vX.Y.Z` on that commit.
+`.github/workflows/release.yml` then runs CI, publishes to PyPI and creates the
+[GitHub release](https://github.com/libgs/ffgs/releases), whose notes are generated
+by [git-cliff](https://git-cliff.org/) from the conventional commits since the
+previous tag (`cliff.toml`; preview with `uvx git-cliff --unreleased`).
+
 ## License
 
 **The ffgs package as distributed is not entirely Apache-2.0: it includes code for
