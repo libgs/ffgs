@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from contextlib import nullcontext
-from dataclasses import dataclass, replace
+from dataclasses import dataclass, field, replace
 from itertools import chain
 from pathlib import Path
 from typing import Any
@@ -53,7 +53,8 @@ class GSOutput:
     as `pipe(views)` returns them (what the model's official code produces); or
     `"world"`, the frame of the input c2w, after `to_world()`. `frame` is the
     model frame either way; it is None when the views had no poses, and then
-    there is no world frame to go to.
+    there is no world frame to go to. `meta` holds the pipeline's fields for the
+    ply header (`model`, `render`, `background`; see `save_ply`).
     """
 
     gaussians: Gaussians
@@ -61,6 +62,7 @@ class GSOutput:
     space: str = "model"
     # Predicted input cameras (normalised K for the model's input images).
     cameras: Cameras | None = None
+    meta: dict[str, str] = field(default_factory=dict)
 
     def __post_init__(self) -> None:
         if self.space not in SPACES:
@@ -86,7 +88,29 @@ class GSOutput:
         cameras = self.cameras
         if cameras is not None:
             cameras = to_world.apply_cameras(replace(cameras, c2w=cameras.c2w.float()))
-        return GSOutput(gaussians, self.frame, space="world", cameras=cameras)
+        return replace(
+            self,
+            gaussians=gaussians,
+            space="world",
+            cameras=cameras,
+            meta=dict(self.meta),
+        )
+
+    def save_ply(self, path: str | Path, index: int = 0, *, prune: bool = True) -> Path:
+        """`gaussians.save_ply` (in whichever `space` this output is), its header
+        carrying ffgs's fields: `version`, `model`, `space`, `render`,
+        `background` (read back with `ffgs.read_ply_meta`)."""
+        from . import __version__
+
+        fields = {
+            "version": __version__,
+            "model": self.meta.get("model"),
+            "space": self.space,
+            "render": self.meta.get("render"),
+            "background": self.meta.get("background"),
+        }
+        meta = {key: value for key, value in fields.items() if value is not None}
+        return self.gaussians.save_ply(path, index, prune=prune, meta=meta)
 
 
 class GSPipeline:
@@ -95,15 +119,24 @@ class GSPipeline:
     >>> pipe = GSPipeline.from_pretrained("path/or/repo-id", device="cuda")
     >>> out = pipe(Views(images, intrinsics, c2w))  # Gaussians in the model frame
     >>> images = pipe.render(out, Cameras(c2w_new, intrinsics_new, (h, w)))["images"]
-    >>> out.to_world().gaussians.save_ply("scene.ply")  # in the frame of c2w
+    >>> out.to_world().save_ply("scene.ply")  # in the frame of c2w
+
+    `name` is where the pipeline was loaded from, for the ply header: the zoo name
+    or the Hub repo id (`<repo>[/<subfolder>][@<revision>]`); None for a local
+    directory, whose path is not written into the files it makes.
     """
 
     def __init__(
-        self, model: nn.Module, processor: Processor, model_type: str | None = None
+        self,
+        model: nn.Module,
+        processor: Processor,
+        model_type: str | None = None,
+        name: str | None = None,
     ) -> None:
         self.model = model.eval()
         self.processor = processor
         self.model_type = model_type or spec_for_model(model).model_type
+        self.name = name
 
     # --- loading / saving -------------------------------------------------------
 
@@ -148,6 +181,7 @@ class GSPipeline:
                 name, model_type, device, processor_overrides, **hub_kwargs
             )
         subfolder = hub_kwargs.pop("subfolder", None)
+        source = _hub_name(pretrained, subfolder, hub_kwargs.get("revision"))
         if subfolder:
             pretrained = _fetch_subfolder(pretrained, subfolder, **hub_kwargs)
         config = None
@@ -166,7 +200,7 @@ class GSPipeline:
         processor = spec.processor_cls.from_pretrained(pretrained, **hub_kwargs)
         if processor_overrides:
             processor = spec.processor_cls(processor.config, **processor_overrides)
-        pipe = cls(model, processor, model_type)
+        pipe = cls(model, processor, model_type, name=source)
         return pipe.to(device) if device is not None else pipe
 
     @classmethod
@@ -207,7 +241,7 @@ class GSPipeline:
         )
         if processor_overrides:
             processor = spec.processor_cls(processor.config, **processor_overrides)
-        pipe = cls(model, processor, entry.model_type)
+        pipe = cls(model, processor, entry.model_type, name=name)
         return pipe.to(device) if device is not None else pipe
 
     def save_pretrained(
@@ -268,7 +302,18 @@ class GSPipeline:
         gaussians = self.processor.postprocess(raw)
         cameras = self.processor.predicted_cameras(raw)
         frame = self.processor.output_frame(views, prepared, cameras)
-        return GSOutput(gaussians, frame, cameras=cameras)
+        return GSOutput(gaussians, frame, cameras=cameras, meta=self._ply_meta())
+
+    def _ply_meta(self) -> dict[str, str]:
+        """The model's fields for the ply header (see `GSOutput.save_ply`)."""
+        meta = {} if self.name is None else {"model": self.name}
+        settings = self.processor.render_settings
+        # A processor that sets no mode renders with `ffgs.render`'s default.
+        meta["render"] = settings.get("rasterize_mode", "classic")
+        background = self.processor.background
+        if background is not None:
+            meta["background"] = " ".join(f"{float(c):g}" for c in background)
+        return meta
 
     @torch.no_grad()
     def render(
@@ -294,6 +339,17 @@ class GSPipeline:
             return render_mod.render(
                 output.gaussians, cameras.to(self.device), near=near, far=far, **kwargs
             )
+
+
+def _hub_name(
+    pretrained: str | Path, subfolder: str | None, revision: str | None
+) -> str | None:
+    """`<repo>[/<subfolder>][@<revision>]` for a Hub repo id; None for a local
+    directory."""
+    if Path(pretrained).is_dir():
+        return None
+    name = str(pretrained) + (f"/{subfolder}" if subfolder else "")
+    return name + (f"@{revision}" if revision else "")
 
 
 def _fetch_subfolder(pretrained: str | Path, subfolder: str, **hub_kwargs: Any) -> Path:

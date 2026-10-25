@@ -94,7 +94,7 @@ def main() -> None:
 
     args.out.mkdir(parents=True, exist_ok=True)
     # `out` holds the Gaussians in the model's frame; the ply goes in the scene's.
-    ply = out.to_world().gaussians.save_ply(args.out / "gaussians.ply")
+    ply = out.to_world().save_ply(args.out / "gaussians.ply")
     print(f"{out.gaussians.num_gaussians} Gaussians -> {ply}")
     if args.num_render <= 0:
         return

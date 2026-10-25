@@ -5,6 +5,7 @@ import torch
 from _dummy import MODEL_TYPE, SPEC, DummyModel, DummyProcessor
 from test_geometry import eval_sh
 
+import ffgs
 from ffgs import (
     Cameras,
     GSOutput,
@@ -12,9 +13,11 @@ from ffgs import (
     ModelSpec,
     Views,
     get_model_spec,
+    read_ply_meta,
     register_model,
 )
 from ffgs.geometry import quat_to_matrix
+from ffgs.pipeline import _hub_name
 from ffgs.registry import spec_for_model
 
 
@@ -224,3 +227,35 @@ def test_device_of_a_model_without_parameters() -> None:
     model.register_buffer("table", torch.zeros(2, device="meta"))
     meta = GSPipeline(model, DummyProcessor(), model_type="buffers")
     assert meta.device == torch.device("meta")
+
+
+class _BackgroundProcessor(DummyProcessor):
+    background = (1.0, 0.5, 0.0)
+    render_settings = {"rasterize_mode": "antialiased", "clamp": True}
+
+
+def test_save_ply_writes_the_output_fields(tmp_path) -> None:
+    pipe = GSPipeline(_model(), DummyProcessor(scene_scale=0.2))
+    out = pipe(_views())
+    assert read_ply_meta(out.save_ply(tmp_path / "model.ply")) == {
+        "version": ffgs.__version__,
+        "space": "model",
+        "render": "classic",
+    }
+    world = out.to_world()
+    assert world.meta == out.meta and world.meta is not out.meta
+    assert read_ply_meta(world.save_ply(tmp_path / "world.ply"))["space"] == "world"
+
+    pipe = GSPipeline(_model(), _BackgroundProcessor(), name="family/variant")
+    meta = read_ply_meta(pipe(_views()).save_ply(tmp_path / "named.ply"))
+    assert list(meta) == ["version", "model", "space", "render", "background"]
+    assert meta["model"] == "family/variant"
+    assert (meta["render"], meta["background"]) == ("antialiased", "1 0.5 0")
+
+
+def test_pipeline_name_is_the_public_source(tmp_path) -> None:
+    GSPipeline(_model(), DummyProcessor()).save_pretrained(tmp_path)
+    assert GSPipeline.from_pretrained(tmp_path).name is None  # no local paths
+    assert _hub_name(tmp_path, None, None) is None
+    assert _hub_name("owner/repo", None, None) == "owner/repo"
+    assert _hub_name("owner/repo", "v1", "abc123") == "owner/repo/v1@abc123"

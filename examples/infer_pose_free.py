@@ -71,7 +71,7 @@ def main() -> None:
     out = pipe(Views(images))  # no poses: out.frame is None, all in the model's frame
 
     args.out.mkdir(parents=True, exist_ok=True)
-    ply = out.gaussians.save_ply(args.out / "gaussians.ply")
+    ply = out.save_ply(args.out / "gaussians.ply")
     print(f"{out.gaussians.num_gaussians} Gaussians -> {ply}")
     cameras = out.cameras
     record = {

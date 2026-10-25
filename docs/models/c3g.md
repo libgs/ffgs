@@ -39,7 +39,7 @@ from ffgs import GSPipeline, Views
 
 pipe = GSPipeline.from_pretrained("c3g/default", device="cuda")
 out = pipe(Views(images))                    # out.frame and out.cameras are None
-out.gaussians.save_ply("scene.ply")          # in the model's frame
+out.save_ply("scene.ply")                    # in the model's frame
 ```
 
 With poses the output is placed in their frame, as upstream normalises the scene:
@@ -48,7 +48,7 @@ cameras as the unit (it must lie in [1e-3, 1e10]):
 
 ```python
 out = pipe(Views(images, intrinsics, c2w))   # c2w do not change the prediction
-out.to_world().gaussians.save_ply("scene.ply")  # in the frame of c2w
+out.to_world().save_ply("scene.ply")         # in the frame of c2w
 renders = pipe.render(out, target_cameras)["images"]  # cameras in that frame
 ```
 

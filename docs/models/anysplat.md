@@ -31,7 +31,7 @@ from ffgs import GSPipeline, Views
 
 pipe = GSPipeline.from_pretrained("anysplat/default", device="cuda")
 out = pipe(Views(images))                    # no intrinsics, no c2w: out.frame is None
-out.gaussians.save_ply("scene.ply")          # in the model's frame
+out.save_ply("scene.ply")                    # in the model's frame
 renders = pipe.render(out, out.cameras)["images"]  # the inputs, at the predicted cameras
 ```
 

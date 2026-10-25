@@ -18,6 +18,7 @@ Unbatched inputs get a leading batch dimension of 1; outputs stay batched.
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass, replace
 from pathlib import Path
 
@@ -232,15 +233,25 @@ class Gaussians:
             return self.colors
         return ((self.colors - 0.5) / SH_C0)[..., None, :]
 
-    def save_ply(self, path: str | Path, index: int = 0, *, prune: bool = True) -> Path:
+    def save_ply(
+        self,
+        path: str | Path,
+        index: int = 0,
+        *,
+        prune: bool = True,
+        meta: dict[str, str] | None = None,
+    ) -> Path:
         """Write sample `index` as a standard 3DGS ply (INRIA attribute layout).
 
         Binary little-endian float32 per attribute, written directly: the format is
         a text header plus one record array, no library needed. `prune` leaves out
         the Gaussians with opacity exactly 0 (such as the padding of a batch),
         which render nothing; `prune=False` writes every Gaussian, opacity clamped
-        to [1e-6, 1 - 1e-6] for the logit.
+        to [1e-6, 1 - 1e-6] for the logit. `meta` goes in the header as
+        `comment ffgs-<key>: <value>` lines, in order (see `read_ply_meta`);
+        `GSOutput.save_ply` fills it.
         """
+        comments = _meta_comments(meta or {})
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
         keep = self.opacities[index].detach().cpu() != 0
@@ -270,6 +281,7 @@ class Gaussians:
         header = [
             "ply",
             "format binary_little_endian 1.0",
+            *comments,
             f"element vertex {data.shape[0]}",
             *(f"property float {name}" for name in names),
             "end_header",
@@ -278,6 +290,54 @@ class Gaussians:
             handle.write(("\n".join(header) + "\n").encode("ascii"))
             handle.write(np.ascontiguousarray(data, dtype="<f4").tobytes())
         return path
+
+
+# ffgs's ply header fields: `comment ffgs-<key>: <value>`, one per line. Other
+# readers skip comments, so the file stays a plain 3DGS ply.
+PLY_META_PREFIX = "ffgs-"
+_META_KEY = re.compile(r"[a-z0-9]+(-[a-z0-9]+)*")
+
+
+def _meta_comments(meta: dict[str, str]) -> list[str]:
+    lines = []
+    for key, value in meta.items():
+        if not _META_KEY.fullmatch(key):
+            raise ValueError(f"ply meta key {key!r}: lowercase words joined by '-'")
+        value = str(value)
+        if value != value.strip() or not value.isascii() or not value.isprintable():
+            raise ValueError(f"ply meta {key}: {value!r} is not one line of ASCII")
+        if not value:
+            raise ValueError(f"ply meta {key} is empty")
+        lines.append(f"comment {PLY_META_PREFIX}{key}: {value}")
+    return lines
+
+
+def read_ply_meta(path: str | Path) -> dict[str, str]:
+    """The ffgs fields of a ply header (`comment ffgs-<key>: <value>`), keys
+    without the prefix, in file order; {} for a ply ffgs did not write. Only the
+    header is read.
+
+    Fields `GSOutput.save_ply` writes: `version` (of ffgs), `model` (the zoo
+    name or Hub repo id it was loaded from; left out for a local directory),
+    `space` (`world` / `model`), `render` (the rasterize mode: `classic` /
+    `antialiased`) and `background` (`r g b` in [0, 1]; left out when the model
+    defines none). Readers should ignore keys and values they do not know.
+    """
+    meta: dict[str, str] = {}
+    with Path(path).open("rb") as handle:
+        if handle.readline().rstrip(b"\r\n") != b"ply":
+            raise ValueError(f"{path} is not a ply file")
+        for raw in handle:
+            line = raw.decode("ascii", errors="replace").rstrip("\r\n")
+            if line == "end_header":
+                return meta
+            body = line.removeprefix("comment ")
+            if body == line or not body.startswith(PLY_META_PREFIX):
+                continue
+            key, sep, value = body[len(PLY_META_PREFIX) :].partition(": ")
+            if sep:
+                meta[key] = value
+    raise ValueError(f"{path}: the ply header has no end_header")
 
 
 def sh_degree_from_channels(channels: int) -> int | None:

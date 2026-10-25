@@ -26,7 +26,7 @@ from ffgs import GSPipeline, Views
 
 pipe = GSPipeline.from_pretrained("tokengs/dl3dv-6v", device="cuda")
 out = pipe(Views(images, intrinsics, c2w))      # poses are required
-out.to_world().gaussians.save_ply("scene.ply")  # in the frame of c2w
+out.to_world().save_ply("scene.ply")            # in the frame of c2w
 ```
 
 A DL3DV scene (nerfstudio layout) with

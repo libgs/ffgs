@@ -15,7 +15,7 @@ from .pipeline import GSOutput, GSPipeline
 from .processor import ImageFitConfig, Prepared, Processor
 from .registry import ModelSpec, get_model_spec, register_model
 from .render import render
-from .types import Cameras, Gaussians, Views
+from .types import Cameras, Gaussians, Views, read_ply_meta
 
 try:
     __version__ = _metadata.version("ffgs")
@@ -34,6 +34,7 @@ __all__ = [
     "Processor",
     "Views",
     "get_model_spec",
+    "read_ply_meta",
     "register_model",
     "render",
 ]

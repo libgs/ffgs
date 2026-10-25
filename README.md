@@ -15,7 +15,7 @@ from ffgs import Cameras, GSPipeline, Views
 pipe = GSPipeline.from_pretrained("<family>/<variant>", device="cuda")  # or a path / Hub repo
 out = pipe(Views(images, intrinsics, c2w))          # -> GSOutput, in the model's frame
 images = pipe.render(out, Cameras(c2w_new, k_new, (h, w)))["images"]  # cameras in your frame
-out.to_world().gaussians.save_ply("scene.ply")      # standard 3DGS ply, in the frame of c2w
+out.to_world().save_ply("scene.ply")                # standard 3DGS ply, in the frame of c2w
 ```
 
 ## Install
@@ -48,7 +48,7 @@ in that frame (see [Conventions](#conventions)):
 ```python
 pipe = GSPipeline.from_pretrained("<family>/<variant>", device="cuda")  # e.g. anysplat/default
 out = pipe(Views(images))                    # no intrinsics, no c2w: out.frame is None
-out.gaussians.save_ply("scene.ply")          # in the model's frame
+out.save_ply("scene.ply")                    # in the model's frame
 renders = pipe.render(out, out.cameras)["images"]  # the inputs, at the predicted cameras
 ```
 
@@ -90,7 +90,7 @@ model's own code produces them.
 |---|---|
 | `out = pipe(views)` | the model's frame (`out.frame`: world → model) |
 | `out.to_world()` | the world frame of the input c2w (fp32) |
-| `out.gaussians.save_ply(path)` | whichever frame `out` is in: `out.to_world().gaussians.save_ply(path)` for a ply that lines up with your cameras |
+| `out.save_ply(path)` | whichever frame `out` is in: `out.to_world().save_ply(path)` for a ply that lines up with your cameras |
 | `pipe.render(out, cameras)` | either: `cameras` are always in the world frame of the input c2w, and are taken (with near / far) into the model's frame when needed |
 
 `to_world()` is one similarity transform for every model — rotation, uniform scale
@@ -118,6 +118,29 @@ well they agree, per view: rotation error in degrees, centre error in world
 units, and centre error relative to the RMS spread of the given centres. Fewer
 than 2 views, coincident predicted centres or a fit with negative scale raise.
 
+`out.save_ply` writes a standard 3DGS ply (INRIA layout) whose header also says
+where it came from, one `comment ffgs-<key>: <value>` line per field; other
+readers skip comments, and `ffgs.read_ply_meta(path)` reads them back:
+
+```
+comment ffgs-version: 0.1.0
+comment ffgs-model: anysplat/default
+comment ffgs-space: world
+comment ffgs-render: classic
+comment ffgs-background: 1 1 1
+```
+
+| field | |
+|---|---|
+| `version` | the ffgs version that wrote the file |
+| `model` | the zoo name or Hub repo id (`<repo>[/<subfolder>][@<revision>]`) the pipeline was loaded from; left out for a local directory |
+| `space` | `world` (after `to_world()`) or `model` |
+| `render` | the rasterize mode the model renders with: `classic` or `antialiased` |
+| `background` | the model's background colour, `r g b` in [0, 1]; left out when it defines none |
+
+Nothing else goes in: no arrays, paths or timestamps, so the same output always
+writes the same file. `Gaussians.save_ply` alone writes no fields.
+
 Resize + crop is the default, not a requirement. Processor options (in
 `processor_config.json` or `processor_overrides=`):
 
@@ -137,7 +160,7 @@ pipe = GSPipeline.from_pretrained(path, processor_overrides={"crop_mode": "pad"}
 
 | | |
 |---|---|
-| `types` | `Views`, `Cameras`, `Gaussians` (+ `save_ply`) |
+| `types` | `Views`, `Cameras`, `Gaussians` (+ `save_ply`, `read_ply_meta`) |
 | `processor` | per-model pre / post-processing, stored as `processor_config.json` |
 | model | the model's own `nn.Module` with `PyTorchModelHubMixin` (`config.json` + safetensors) |
 | `pipeline` | `GSPipeline`: `from_pretrained` dispatches on `config.json:model_type` |
