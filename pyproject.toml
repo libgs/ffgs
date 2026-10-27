@@ -1,6 +1,6 @@
 [project]
 name = "ffgs"
-version = "0.1.0.dev1"
+version = "0.1.0.dev2"
 description = "Standard inference for feed-forward 3D Gaussian Splatting models"
 readme = "README.md"
 # AnySplat and C3G include non-commercial components: see each model's LICENSE.
