@@ -26,6 +26,9 @@ dependencies = [
     "torchvision>=0.17",
 ]
 
+[project.scripts]
+ffgs = "ffgs.cli:main"
+
 [project.optional-dependencies]
 # Rasterisation (`ffgs.render`, `GSPipeline.render`); needs a CUDA torch.
 render = ["gsplat"]

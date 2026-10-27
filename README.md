@@ -54,13 +54,49 @@ renders = pipe.render(out, out.cameras)["images"]  # the inputs, at the predicte
 
 [`examples/infer_pose_free.py`](https://github.com/libgs/ffgs/blob/main/examples/infer_pose_free.py)
 does this for a folder of images: it writes the ply, the predicted cameras
-(`cameras.json`: OpenCV c2w and normalised intrinsics per input image) and the
-inputs re-rendered at them:
+(`cameras.json`, see [Cameras](#cameras)) and the inputs re-rendered at them:
 
 ```bash
 python examples/infer_pose_free.py <image dir> --model <family>/<variant> \
     --num-views 8 --out out
 ```
+
+## Command line
+
+`pip install ffgs` also installs an `ffgs` command, to keep track of models and run
+them on a folder of images:
+
+```bash
+ffgs ls --zoo                        # the model zoo, and which entries are downloaded
+ffgs add <family>/<variant>          # record a model, without downloading it
+ffgs pull <family>/<variant>         # download it now (else on first use)
+ffgs run <family>/<variant> <images> -o out --cameras <scene>/transforms.json
+ffgs run <family>/<variant> <images> -o out --cameras <scene>/sparse/0   # COLMAP
+ffgs run <family>/<variant> <images> -o out   # models that need no cameras
+ffgs ls                              # the recorded models, downloaded or not
+ffgs rm <family>/<variant>           # forget it (its files stay)
+```
+
+A source is anything `GSPipeline.from_pretrained` takes: a zoo name, a Hub repo id
+(`--revision`, `--subfolder`) or a local directory. `run` reads the images of the
+folder (sorted by file name, `--num-views` of them evenly spaced; default 8), all
+the same size, with their cameras from `--cameras` (any camera file of
+[Cameras](#cameras); each image must have its camera's aspect ratio), and writes
+`scene.ply` (in the frame of the cameras, else in the model's) and, for models
+that predict cameras, those cameras as `cameras.json`, as they are.
+
+ffgs keeps one small JSON record per model in `$FFGS_HOME/models`
+(default `~/.cache/ffgs`); the weights stay in the Hugging Face cache
+(`HF_HUB_CACHE`), shared with other tools. A record says where they are, not
+what is there: `ffgs ls` checks that each time, so a model whose files were
+deleted (e.g. with `hf cache rm`) shows as `not cached` and is downloaded again
+when next used. Every model `GSPipeline.from_pretrained` loads is recorded, from
+the command line or from Python. `ffgs rm` deletes records only: the weights are
+cleaned with the Hugging Face tools (`hf cache rm`), and a local directory is
+yours to delete.
+
+Downloads follow the usual Hugging Face settings: `HF_ENDPOINT` for a mirror,
+`HF_HUB_OFFLINE=1` to use only what is cached, `HF_TOKEN` for gated repos.
 
 ## Models
 
@@ -156,11 +192,68 @@ Resize + crop is the default, not a requirement. Processor options (in
 pipe = GSPipeline.from_pretrained(path, processor_overrides={"crop_mode": "pad"})
 ```
 
+
+## Cameras
+
+`ffgs.io` reads and writes camera files; it knows nothing of `Views` or
+`Cameras`, so you build those from what it reads. A camera file is a list of
+`ffgs.io.Camera`, in order, one per image:
+
+| | |
+|---|---|
+| `name` | the image's file name; the camera's position (`"0"`, `"1"`, ...) when its source names none |
+| `k` | pinhole intrinsics `[3, 3]`, normalised by `size` (fx / w, cx / w, fy / h, cy / h) |
+| `c2w` | camera-to-world `[4, 4]`, OpenCV axes |
+| `size` | the `(w, h)` the camera is for |
+
+`io.read_cameras(path)` reads them, in the file's order, from
+
+- a nerfstudio / instant-ngp `transforms.json` (`fl_x` / `fl_y` or
+  `camera_angle_x` / `camera_angle_y`, `cx` / `cy`, `w` / `h`, globally or per
+  frame; OpenGL `transform_matrix`);
+- a COLMAP model (`cameras` + `images`, `.bin` or `.txt`; a directory, or the
+  files);
+- an ffgs `cameras.json`.
+
+Lens distortion is ignored, with a warning: a camera is its pinhole `k` (undistort
+the images yourself if it matters). A camera without pinhole intrinsics (e.g.
+nerfstudio `EQUIRECTANGULAR`) is an error. `io.pair_cameras(paths, cameras)`
+gives each image its camera: by file name, or in order when the cameras are
+named by position.
+
+`io.save_cameras(path, cameras)` writes them as an ffgs `cameras.json`, which
+`read_cameras` reads back as they were:
+
+```json
+[{"name": "0001.png", "k": [[0.8, 0, 0.5], [0, 1.1, 0.5], [0, 0, 1]],
+  "c2w": [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+  "size": [640, 480]}]
+```
+
+Other formats are yours to convert: build the cameras (or write a `cameras.json`).
+
+```python
+import torch
+from ffgs import Views
+from ffgs.io import image_paths, pair_cameras, read_cameras, read_image
+
+paths = image_paths("images/")
+cameras = pair_cameras(paths, read_cameras("transforms.json"))
+views = Views(
+    torch.stack([read_image(p) for p in paths]),  # all the same size
+    torch.stack([c.k for c in cameras]),
+    torch.stack([c.c2w for c in cameras]),
+    normalized_intrinsics=True,
+)
+out = pipe(views)
+```
+
 ## Layers
 
 | | |
 |---|---|
 | `types` | `Views`, `Cameras`, `Gaussians` (+ `save_ply`, `read_ply_meta`) |
+| `io` | camera files as `Camera`s (`read_cameras`, `save_cameras`, `pair_cameras`) and image helpers; independent of the rest |
 | `processor` | per-model pre / post-processing, stored as `processor_config.json` |
 | model | the model's own `nn.Module` with `PyTorchModelHubMixin` (`config.json` + safetensors) |
 | `pipeline` | `GSPipeline`: `from_pretrained` dispatches on `config.json:model_type` |

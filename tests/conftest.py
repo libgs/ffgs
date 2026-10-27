@@ -6,6 +6,8 @@ import pytest
 from safetensors import safe_open
 
 FIXTURE = Path(__file__).parent / "fixtures" / "reference.safetensors"
+# `cache` and `entries`: a fake Hugging Face cache and zoo.
+pytest_plugins = ["_hub_cache"]
 
 
 def _has_gpu() -> bool:
@@ -32,6 +34,15 @@ def pytest_collection_modifyitems(config, items) -> None:
         for marker, skip in skips.items():
             if marker in item.keywords:
                 item.add_marker(skip)
+
+
+@pytest.fixture(autouse=True)
+def ffgs_home(tmp_path_factory, monkeypatch):
+    """The model records a test makes go to a directory of its own, never the
+    user's (`ffgs.store`)."""
+    home = tmp_path_factory.mktemp("ffgs-home")
+    monkeypatch.setenv("FFGS_HOME", str(home))
+    return home
 
 
 @pytest.fixture

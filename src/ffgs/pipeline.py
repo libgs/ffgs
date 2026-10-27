@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import warnings
 from contextlib import nullcontext
 from dataclasses import dataclass, field, replace
 from itertools import chain
@@ -12,10 +13,10 @@ from typing import Any
 import torch
 from torch import nn
 
-from . import dynamic, zoo
+from . import dynamic, store, zoo
 from . import render as render_mod
 from .geometry import ModelFrame
-from .processor import PROCESSOR_CONFIG_NAME, Processor, read_json
+from .processor import Processor, read_json
 from .registry import ModelSpec, get_model_spec, spec_for_model
 from .types import Cameras, Gaussians, Views
 
@@ -30,14 +31,6 @@ HUB_KWARGS = frozenset(
         "force_download",
         "local_files_only",
     }
-)
-# What `subfolder=` fetches from a Hub repo: a saved pipeline and its code.
-_PIPELINE_FILES = (
-    CONFIG_NAME,
-    "model.safetensors",
-    "pytorch_model.bin",
-    PROCESSOR_CONFIG_NAME,
-    "*.py",
 )
 
 
@@ -168,6 +161,10 @@ class GSPipeline:
         Hub: config, weights, processor config and code. `subfolder` selects a
         variant saved in a subdirectory of a repo (or of a local directory). A zoo
         entry pins its own revision and file, so it takes neither.
+
+        Downloads go to the Hugging Face cache (`HF_HUB_CACHE`); every model loaded
+        is recorded in `ffgs.store` (what `ffgs ls` lists), unless `cache_dir=` puts
+        it in a cache of the caller's own.
         """
         unknown = set(hub_kwargs) - HUB_KWARGS
         if unknown:
@@ -177,9 +174,12 @@ class GSPipeline:
             )
         name = zoo.resolve(pretrained)
         if name is not None:
-            return cls._from_zoo(
+            pipe = cls._from_zoo(
                 name, model_type, device, processor_overrides, **hub_kwargs
             )
+            _record_use(name, hub_kwargs)
+            return pipe
+        original, options = pretrained, dict(hub_kwargs)
         subfolder = hub_kwargs.pop("subfolder", None)
         source = _hub_name(pretrained, subfolder, hub_kwargs.get("revision"))
         if subfolder:
@@ -201,6 +201,7 @@ class GSPipeline:
         if processor_overrides:
             processor = spec.processor_cls(processor.config, **processor_overrides)
         pipe = cls(model, processor, model_type, name=source)
+        _record_use(original, options)
         return pipe.to(device) if device is not None else pipe
 
     @classmethod
@@ -352,6 +353,25 @@ def _hub_name(
     return name + (f"@{revision}" if revision else "")
 
 
+def _record_use(pretrained: str | Path, hub_kwargs: dict[str, Any]) -> None:
+    """Record a loaded model in `ffgs.store`, unless it came from a cache of the
+    caller's own; a record that cannot be written warns, it never fails a load."""
+    if hub_kwargs.get("cache_dir") is not None:
+        return
+    local = Path(pretrained).is_dir()
+    try:
+        store.touch(
+            pretrained,
+            revision=None if local else hub_kwargs.get("revision"),
+            subfolder=hub_kwargs.get("subfolder"),
+        )
+    except Exception as err:  # a record is never worth a failed load
+        warnings.warn(
+            f"ffgs could not record {pretrained} in {store.home()}: {err}",
+            stacklevel=3,
+        )
+
+
 def _fetch_subfolder(pretrained: str | Path, subfolder: str, **hub_kwargs: Any) -> Path:
     """A local directory holding `subfolder` of a directory or Hub repo."""
     local = Path(pretrained)
@@ -360,7 +380,7 @@ def _fetch_subfolder(pretrained: str | Path, subfolder: str, **hub_kwargs: Any) 
     else:
         from huggingface_hub import snapshot_download
 
-        patterns = [f"{subfolder}/{name}" for name in _PIPELINE_FILES]
+        patterns = [f"{subfolder}/{name}" for name in store.PIPELINE_FILES]
         path = Path(
             snapshot_download(str(pretrained), allow_patterns=patterns, **hub_kwargs)
         )

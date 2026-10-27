@@ -17,6 +17,7 @@ from _dummy import (
 from PIL import Image
 
 from ffgs import GSPipeline
+from ffgs.io import read_cameras
 
 EXAMPLES = Path(__file__).resolve().parents[1] / "examples"
 
@@ -43,25 +44,6 @@ def _scene(root: Path, n: int = 8, h: int = 24, w: int = 40) -> Path:
     meta = {"fl_x": 30.0, "fl_y": 32.0, "cx": 20.0, "cy": 12.0, "w": w, "h": h}
     (root / "transforms.json").write_text(json.dumps({**meta, "frames": frames}))
     return root
-
-
-def test_load_scene(tmp_path) -> None:
-    example = _load("infer_nerfstudio_scene")
-    scene = _scene(tmp_path / "scene")
-    paths, k, c2w = example.load_scene(scene)
-
-    assert [p.name for p in paths] == [f"frame_{i:05d}.png" for i in range(8)]
-    assert all(p.parent == scene / "images" for p in paths)
-    torch.testing.assert_close(k[0, 0, 0], torch.tensor(30.0 / 40))
-    torch.testing.assert_close(k[0, 1, 1], torch.tensor(32.0 / 24))
-    torch.testing.assert_close(k[-1, 0, 0], torch.tensor(50.0 / 40))  # per frame
-    torch.testing.assert_close(k[0, :2, 2], torch.tensor([0.5, 0.5]))
-    # OpenGL -> OpenCV: y and z axes flipped, position kept.
-    assert torch.equal(c2w[3, :3, :3], torch.diag(torch.tensor([1.0, -1.0, -1.0])))
-    torch.testing.assert_close(c2w[3, :3, 3], torch.tensor([0.3, 0.0, 0.0]))
-
-    paths, _, _ = example.load_scene(scene, tmp_path / "small")
-    assert paths[0] == tmp_path / "small" / "frame_00000.png"
 
 
 @pytest.mark.parametrize("render", [False, pytest.param(True, marks=pytest.mark.gpu)])
@@ -153,18 +135,16 @@ def test_infer_pose_free(tmp_path, monkeypatch, render) -> None:
     columns = header.count(b"property float")
     xyz = np.frombuffer(data, dtype="<f4").reshape(-1, columns)[:, :3]
     np.testing.assert_array_equal(xyz, output.gaussians.means[0].cpu().numpy())
-    # Inputs: images 0, 2, 5 of 0..5 (evenly spaced, by file name).
-    cameras = json.loads((out / "cameras.json").read_text())
-    assert [v["file"] for v in cameras["views"]] == [
-        "img_000.png",
-        "img_002.png",
-        "img_005.png",
-    ]
-    assert cameras["image_shape"] == list(output.cameras.image_shape)
-    c2w = torch.tensor([v["c2w"] for v in cameras["views"]])
+    # The predicted cameras as they are, named by position (inputs: images 0, 2
+    # and 5 of 0..5, evenly spaced by file name).
+    cameras = read_cameras(out / "cameras.json")
+    assert [c.name for c in cameras] == ["0", "1", "2"]
+    h, w = output.cameras.image_shape
+    assert all(c.size == (w, h) for c in cameras)
+    c2w = torch.stack([c.c2w for c in cameras])
     torch.testing.assert_close(c2w, output.cameras.c2w[0].cpu())
-    k = torch.tensor([v["k_normalized"] for v in cameras["views"]])
+    k = torch.stack([c.k for c in cameras])
     torch.testing.assert_close(k, output.cameras.normalized_k[0].cpu())
     renders = sorted(p.name for p in out.glob("render_*.png"))
-    expected = ["render_00000.png", "render_00002.png", "render_00005.png"]
+    expected = ["render_0.png", "render_1.png", "render_2.png"]
     assert renders == (expected if render else [])

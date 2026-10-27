@@ -5,9 +5,9 @@ evenly spaced ones to the model without intrinsics or poses, and writes, in the
 model's own frame (there is no other: no poses went in):
 
 - `gaussians.ply`, a standard 3DGS ply;
-- `cameras.json`, the predicted camera of each input image (OpenCV c2w and
-  intrinsics normalised by the image size, for the model's input size);
-- `render_<index>.png`, the inputs re-rendered at their predicted cameras
+- `cameras.json`, the cameras the model predicts, as they are (see
+  `ffgs.io.save_cameras`): one per input image, in order, named by position;
+- `render_<i>.png`, the inputs re-rendered at their predicted cameras
   (rendering needs CUDA and `pip install "ffgs[render]"`).
 
     python examples/infer_pose_free.py <image dir> \\
@@ -21,33 +21,13 @@ before use (`ffgs.zoo` entries carry it).
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 
-import numpy as np
 import torch
 from PIL import Image
 
 from ffgs import GSPipeline, Views
-
-SUFFIXES = (".png", ".jpg", ".jpeg")
-
-
-def image_paths(folder: Path) -> list[Path]:
-    paths = sorted(p for p in folder.iterdir() if p.suffix.lower() in SUFFIXES)
-    if not paths:
-        raise SystemExit(f"no {'/'.join(SUFFIXES)} images in {folder}")
-    return paths
-
-
-def read_rgb(path: Path) -> torch.Tensor:
-    """uint8 [3, H, W]."""
-    with Image.open(path) as image:
-        return torch.from_numpy(np.array(image.convert("RGB"))).permute(2, 0, 1)
-
-
-def evenly_spaced(n: int, count: int) -> torch.Tensor:
-    return torch.linspace(0, n - 1, min(count, n)).round().long().unique()
+from ffgs.io import Camera, evenly_spaced, image_paths, read_image, save_cameras
 
 
 def main() -> None:
@@ -66,39 +46,28 @@ def main() -> None:
     pipe = GSPipeline.from_pretrained(args.model, device=device)
 
     paths = image_paths(args.image_dir)
-    picked = evenly_spaced(len(paths), args.num_views).tolist()
-    images = torch.stack([read_rgb(paths[i]) for i in picked])
+    paths = [paths[i] for i in evenly_spaced(len(paths), args.num_views)]
+    images = torch.stack([read_image(path) for path in paths])  # all the same size
     out = pipe(Views(images))  # no poses: out.frame is None, all in the model's frame
 
     args.out.mkdir(parents=True, exist_ok=True)
     ply = out.save_ply(args.out / "gaussians.ply")
     print(f"{out.gaussians.num_gaussians} Gaussians -> {ply}")
-    cameras = out.cameras
-    record = {
-        "frame": "model",
-        "image_shape": list(cameras.image_shape),
-        "views": [
-            {
-                "index": index,
-                "file": paths[index].name,
-                "c2w": cameras.c2w[0, v].tolist(),
-                "k_normalized": cameras.normalized_k[0, v].tolist(),
-            }
-            for v, index in enumerate(picked)
-        ],
-    }
-    (args.out / "cameras.json").write_text(json.dumps(record, indent=1) + "\n")
-    print(f"{len(picked)} predicted cameras -> {args.out / 'cameras.json'}")
+    h, w = out.cameras.image_shape
+    k, c2w = out.cameras.normalized_k[0].cpu(), out.cameras.c2w[0].cpu()
+    cameras = [Camera(str(i), k[i], c2w[i], (w, h)) for i in range(len(paths))]
+    saved = save_cameras(args.out / "cameras.json", cameras)
+    print(f"{len(cameras)} predicted cameras -> {saved}")
     if args.no_render:
         return
 
     # The predicted cameras are in the model's frame, like the Gaussians.
-    rendered = pipe.render(out, cameras)["images"][0]
-    for index, image in zip(picked, rendered):
-        path = args.out / f"render_{index:05d}.png"
+    rendered = pipe.render(out, out.cameras)["images"][0]
+    for i, (image, source) in enumerate(zip(rendered, paths)):
+        path = args.out / f"render_{i}.png"
         pixels = (image.clamp(0, 1) * 255).round().to(torch.uint8).permute(1, 2, 0)
         Image.fromarray(pixels.cpu().numpy()).save(path)
-        print(f"image {index} -> {path}")
+        print(f"{source.name} -> {path}")
 
 
 if __name__ == "__main__":

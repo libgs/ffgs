@@ -182,11 +182,9 @@ def parse_entry(name: str, data: Any) -> ZooEntry:
     )
 
 
-def load_state_dict(
-    entry: ZooEntry, spec: ModelSpec, **hub_kwargs: Any
-) -> dict[str, torch.Tensor]:
-    """Download the entry's weights at the pinned commit, check the sha256, and
-    convert them to `spec.model_cls`'s layout (`spec.convert_state_dict`)."""
+def download_weights(entry: ZooEntry, **hub_kwargs: Any) -> Path:
+    """Download the entry's weights at the pinned commit (if not cached) and check
+    the sha256; the file."""
     from huggingface_hub import hf_hub_download
 
     w = entry.weights
@@ -202,6 +200,15 @@ def load_state_dict(
             f"{digest}, expected {w.sha256} ({path}). The download may be corrupt "
             "(retry with force_download=True) or the entry is wrong."
         )
+    return path
+
+
+def load_state_dict(
+    entry: ZooEntry, spec: ModelSpec, **hub_kwargs: Any
+) -> dict[str, torch.Tensor]:
+    """Download the entry's weights at the pinned commit, check the sha256, and
+    convert them to `spec.model_cls`'s layout (`spec.convert_state_dict`)."""
+    path = download_weights(entry, **hub_kwargs)
     if path.suffix == ".safetensors":
         from safetensors.torch import load_file
 
